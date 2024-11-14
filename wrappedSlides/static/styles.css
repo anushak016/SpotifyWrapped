@@ -1,0 +1,142 @@
+/* styles.css */
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #121212; /* Spotify Dark background */
+    color: #FFFFFF; /* White text color */
+}
+
+#slide-show {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+h2, h3 {
+    color: #1DB954; /* Spotify Green */
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.profile {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.profile img {
+    border-radius: 50%;
+    width: 100px;
+    height: 100px;
+}
+
+.profile h3 {
+    font-size: 24px;
+    margin: 10px 0;
+}
+
+.profile p {
+    font-size: 16px;
+}
+
+.item-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.item-list li {
+    background-color: #282828; /* Dark background for items */
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.item-list li img {
+    border-radius: 8px;
+    width: 60px;
+    height: 60px;
+}
+
+.track-info, .artist-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.item-title {
+    font-weight: bold;
+    font-size: 18px;
+    margin-bottom: 5px;
+}
+
+.artist, .playlist {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.track img {
+    width: 60px;
+    height: 60px;
+    border-radius: 8px;
+}
+
+/*button {*/
+/*    background-color: #1DB954;*/
+/*    color: white;*/
+/*    border: none;*/
+/*    padding: 10px;*/
+/*    margin: 20px;*/
+/*    cursor: pointer;*/
+/*    border-radius: 5px;*/
+/*    font-size: 16px;*/
+/*    width: 150px;*/
+/*}*/
+
+button {
+    background-color: #1DB954;
+    color: white;
+    border: none;
+    padding: 15px;
+    margin: 10px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 18px;
+    width: 150px;
+}
+
+button:hover {
+    background-color: #1ED760; /* Lighter green on hover */
+}
+
+button#previous {
+    position: fixed;
+    bottom: 30px;
+    left: 30px;
+    z-index: 10; /* Ensure buttons are above other content */
+}
+
+button#next {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    z-index: 10; /* Ensure buttons are above other content */
+}
+
+#previous, #next {
+    margin-top: 20px;
+}
+
+#slide-show .slide {
+    display: none;
+}
+
+#slide-show .slide.active {
+    display: block;
+}
