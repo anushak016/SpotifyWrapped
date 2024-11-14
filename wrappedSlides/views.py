@@ -155,3 +155,6 @@ def wrapped(request):
     ]
 
     return render(request, "profile.html", {"slides": slides})
+
+def contact(request):
+    return render(request, "contact.html")

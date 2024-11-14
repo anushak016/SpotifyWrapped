@@ -17,7 +17,6 @@ def home_view(request):
         return redirect('login')  # Redirect them to the login page or other safe page
     return render(request, 'home.html')
 
-
 def login_view(request):
     # Check if the user has just registered
     if request.session.get('just_registered'):
