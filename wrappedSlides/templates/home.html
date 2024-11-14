@@ -1,0 +1,19 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home - Spotify Wrapped</title>
+    <link rel="stylesheet" href="{% static 'wrapped/styles.css' %}">
+</head>
+<body>
+    <div class="home-container">
+        <h1>Welcome To Spotify Wrapped</h1>
+        <p>Click below to see your personalized Wrapped experience.</p>
+        <a href="{% url 'spotify_login' %}">
+            <button class="start-button">See My Wrapped</button>
+        </a>
+    </div>
+</body>
+</html>
