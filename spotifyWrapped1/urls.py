@@ -1,5 +1,5 @@
 """
-URL configuration for spotify_wrapped project.
+URL configuration for spotifyWrapped1 project.
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/5.1/topics/http/urls/
@@ -15,14 +15,13 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path, include
-from wrappedSlides import views
+from django.urls import path
+from spotifyWrapped1 import views
 
 urlpatterns = [
-    path('', views.home, name='home'),
     path('admin/', admin.site.urls),
-    path('auth/', include('authentication.urls')),
-    path('spotify/', include('wrappedSlides.urls'))
-
+    path('spotify/login/', views.spotify_login, name='spotify_login'),  # URL for Spotify login
+    path('spotify/callback/', views.spotify_callback, name='spotify_callback'),  # URL for Spotify callback
+    path('spotify/game/', views.spotify_game, name='spotify_game'),  # URL for the game view
+    path('spotify/submit_guess/', views.submit_guess, name='submit_guess'),
 ]
-

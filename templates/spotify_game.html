@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Spotify Game</title>
+</head>
+<body>
+    <h1>Guess Your Listening Month</h1>
+    <p>For each song below, guess the month when you listened to it the most!</p>
+
+    {% for track in game_data %}
+        <div>
+            <h3>{{ track.track_name }} by {{ track.artist_name }}</h3>
+            <form method="post" action="{% url 'submit_guess' %}">
+                {% csrf_token %}
+                <input type="hidden" name="track_id" value="{{ track.track_id }}">
+                <label for="month">Choose a month:</label>
+                <select name="month" required>
+                    <option value="January">January</option>
+                    <option value="February">February</option>
+                    <option value="March">March</option>
+                    <option value="April">April</option>
+                    <option value="May">May</option>
+                    <option value="June">June</option>
+                    <option value="July">July</option>
+                    <option value="August">August</option>
+                    <option value="September">September</option>
+                    <option value="October">October</option>
+                    <option value="November">November</option>
+                    <option value="December">December</option>
+                </select>
+                <button type="submit">Submit Guess</button>
+            </form>
+        </div>
+        <hr>
+    {% endfor %}
+</body>
+</html>
