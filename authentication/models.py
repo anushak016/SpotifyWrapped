@@ -9,4 +9,10 @@ class Profile(models.Model):
     security_answer = models.CharField(max_length=255)
 
     def __str__(self):
+        """
+                Returns the string representation of the profile, which is the username of the associated user.
+
+                Returns:
+                    str: The username of the associated user.
+        """
         return self.user.username
