@@ -23,7 +23,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('auth/', include('authentication.urls')),
     path('spotify/', include('wrappedSlides.urls')),
-    path('contact/', views.contact, name='aboutus'),
+    path('contact/', views.contact, name='contact'),
 
 ]
 
