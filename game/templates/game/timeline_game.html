@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Timeline Game</title>
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        h1 {
+            text-align: center;
+        }
+        p {
+            text-align: center;
+        }
+        .song-list {
+            list-style: none;
+            padding: 0;
+            margin: 20px auto;
+            width: 50%;
+        }
+        .song {
+            padding: 10px;
+            margin: 5px 0;
+            background-color: #f0f0f0;
+            border-radius: 5px;
+            cursor: move;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        button {
+            display: block;
+            margin: 20px auto;
+            padding: 10px 20px;
+            font-size: 16px;
+            color: #fff;
+            background-color: #007bff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>Timeline Game</h1>
+    <p>Drag and drop the songs to arrange them in the correct order!</p>
+
+    <!-- Form for submitting the timeline -->
+    <form id="timeline-form" method="POST" action="{% url 'submit_timeline' %}">
+        {% csrf_token %}
+        <ul id="song-list" class="song-list">
+            {% for song in tracks %}
+                <li class="song" data-id="{{ song.id }}">
+                    <strong>{{ song.title }}</strong> by {{ song.artist }}
+                </li>
+            {% endfor %}
+        </ul>
+        <input type="hidden" name="track_order" id="song-order">
+        <button type="submit">Submit</button>
+    </form>
+
+    <script>
+        // Enable drag-and-drop functionality
+        const sortable = new Sortable(document.getElementById('song-list'), {
+            animation: 150,
+            onEnd: () => {
+                // Capture the updated song order
+                const order = Array.from(document.querySelectorAll('.song')).map(song => song.dataset.id);
+                document.getElementById('song-order').value = JSON.stringify(order);
+            }
+        });
+
+        // Handle form submission with AJAX
+        document.getElementById('timeline-form').addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            const songOrder = document.getElementById('song-order').value; // JSON string of song order
+            const csrfToken = document.querySelector('input[name=csrfmiddlewaretoken]').value; // CSRF token
+
+            fetch(this.action, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json', // Send data as JSON
+                    'X-CSRFToken': csrfToken // Include CSRF token
+                },
+                body: JSON.stringify({ track_order: JSON.parse(songOrder) }) // Parse and send the song order
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    alert(`Error: ${data.error}`);
+                } else {
+                    alert(`You scored ${data.score}/${data.total}!`);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Something went wrong. Please try again.');
+            });
+        });
+    </script>
+</body>
+</html>

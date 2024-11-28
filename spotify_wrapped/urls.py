@@ -16,13 +16,13 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from wrappedSlides import views
+from game import views
 
 urlpatterns = [
-    path('', views.home, name='home'),
+    path('', include('authentication.urls')),  # Replace with the appropriate app for the home view
     path('admin/', admin.site.urls),
-    path('auth/', include('authentication.urls')),
-    path('spotify/', include('wrappedSlides.urls'))
-
+    path('auth/', include('authentication.urls')),  # Authentication-related URLs
+    path('game/', include('game.urls')),  # Include URLs for the game app
+    path('spotify/redirect/', views.spotify_callback, name='spotify_callback')
 ]
 

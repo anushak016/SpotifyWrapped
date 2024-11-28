@@ -30,6 +30,12 @@ def login_view(request):
         username = request.POST['username']
         password = request.POST['password']
         user = authenticate(request, username=username, password=password)
+        if not username or not password:
+            error_message = "Both username and password are required."
+            return render(request, 'login.html', {'error_message': error_message})
+        if not user.is_active:
+            error_message = "Your account is inactive. Please contact support."
+            return render(request, 'login.html', {'error_message': error_message})
         if user is not None:
             login(request, user)
             return redirect(reverse('geolocator'))
