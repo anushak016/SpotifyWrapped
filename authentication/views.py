@@ -17,7 +17,6 @@ def home_view(request):
         return redirect('login')  # Redirect them to the login page or other safe page
     return render(request, 'home.html')
 
-
 def login_view(request):
     # Check if the user has just registered
     if request.session.get('just_registered'):
@@ -25,6 +24,7 @@ def login_view(request):
         # Remove the flag after logging out
         request.session.pop('just_registered', None)
         return redirect('login')  # Redirect them to the login page or other safe page
+
 
     if request.method == 'POST':
         username = request.POST['username']
@@ -35,14 +35,12 @@ def login_view(request):
             return redirect(reverse('geolocator'))
         else:
             error_message = "Incorrect username or password."
-            return render(request, 'login.html', {'error_message': error_message})
+            return render(request, 'login.html', {'error_message': error_message})    
     return render(request, 'login.html')
-
 
 def logout_view(request):
     logout(request)
     return redirect('/auth/login/')
-
 
 def register_view(request):
     # Check if the user has just registered
@@ -68,7 +66,7 @@ def register_view(request):
         # Check if the passwords match
         elif password != confirm_password:
             error_message = 'Passwords do not match.'
-
+        
         elif not security_question or not security_answer:
             error_message = 'Please provide a security question and answer.'
 
@@ -97,12 +95,10 @@ def register_view(request):
             return render(request, 'register.html', {'error_message': error_message})
     return render(request, 'register.html')
 
-
 def login_user(request, username):
     user = User.objects.get(username=username)
     login(request, user)  # Log the user in
     return redirect(reverse('geolocator'))
-
 
 def request_username_view(request):
     # Check if the user has just registered
@@ -117,7 +113,7 @@ def request_username_view(request):
     if request.method == 'POST':
         username = request.POST['username']
         # Check if the user exists
-
+        
         if User.objects.filter(username=username).exists():
             request.session['reset_username'] = username  # Store the username in session
             return redirect('reset_password')  # Redirect to the security question form
@@ -125,7 +121,6 @@ def request_username_view(request):
             error_message = 'Username does not exist.'
         return render(request, 'request_username.html', {'error_message': error_message})
     return render(request, 'request_username.html')
-
 
 def reset_password_view(request):
     # Check if the user has just registered
@@ -135,7 +130,7 @@ def reset_password_view(request):
         # Remove the flag after logging out
         request.session.pop('just_registered', None)
         return redirect('login')  # Redirect them to the login page or other safe page
-
+    
     error_message = None
     success_message = None
     username = request.session.get('reset_username', None)
@@ -149,6 +144,7 @@ def reset_password_view(request):
         profile = Profile.objects.get(user=user)
     except Profile.DoesNotExist:
         return HttpResponse('No profile found for this user. Please try again.')
+    
 
     if request.method == 'POST':
         answer = request.POST['security_answer']
@@ -164,7 +160,7 @@ def reset_password_view(request):
                 return render(request, 'reset_password_question.html', {
                     'security_question': profile.security_question,
                     'success_message': success_message
-                })
+                })            
             else:
                 error_message = 'Passwords do not match.'
         else:
@@ -173,5 +169,5 @@ def reset_password_view(request):
             'security_question': profile.security_question,
             'error_message': error_message
         })
-
+    
     return render(request, 'reset_password_question.html', {'security_question': profile.security_question})

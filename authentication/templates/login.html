@@ -1,87 +1,80 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        /* Custom styles */
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            height: 100vh;
-            background-image: url('IMG_4543.HEIC');
-            background-repeat: no-repeat;
-            background-attachment: fixed;
-            background-size: cover;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
+<!-- templates/login.html -->
+{% extends "base.html" %}
+{% load static %}
 
-        #top-banner {
-            background-color: #1DB954;
-            color: white;
-            padding: 15px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-        }
+{% block title %}Login{% endblock %}
 
-        .container {
-            background-color: #fff;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            padding: 40px;
-            width: 300px;
-            text-align: center;
-        }
+{% block extra_styles %}
+<style>
+    /* Background styling for login page */
+    body {
+        padding-top: 80px; /* Offset for fixed header */
+        color: #333;
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
 
-        .container h1 {
-            color: #1DB954;
-            font-size: 24px;
-            margin-bottom: 20px;
-        }
+    /* Container styling */
+    .container {
+        max-width: 400px;
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        padding: 40px;
+    }
 
-        .btn-custom {
-            background-color: #1DB954;
-            color: #fff;
-            transition: background-color 0.3s ease;
-            margin-top: 10px;
-        }
+    h1 {
+        margin-bottom: 20px;
+        font-size: 24px;
+        color: #1DB954;
+    }
 
-        .btn-custom:hover {
-            background-color: #073625;
-        }
+    .btn-custom {
+        background-color: #1DB954;
+        color: #fff;
+        transition: background-color 0.3s ease;
+    }
 
-        .footer {
-            margin-top: 20px;
-            font-size: 12px;
-            color: #777;
-        }
-    </style>
-</head>
-<body>
+    .btn-custom:hover {
+        background-color: #073625;
+    }
 
-    <!-- Top Banner -->
-    <header id="top-banner" class="d-flex justify-content-between align-items-center w-100 fixed-top">
-        <h1 class="ml-3 mb-0">Atlanta Food Finder</h1>
-    </header>
+    .footer {
+        margin-top: 20px;
+        font-size: 12px;
+        color: #777;
+    }
 
-    <!-- Main Container -->
-    <div class="container mt-5 pt-5">
-        <h1>Welcome</h1>
-        <a href="/auth/register/" class="btn btn-custom d-block mb-2">Register</a>
-        <a href="/auth/login" class="btn btn-custom d-block">Login</a>
-        <div class="footer mt-3">
-            <p>&copy; 2024 CS2340 TEAM 50</p>
+    .error-message {
+        color: red;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+    <h1>Login</h1>
+    <form method="POST" action="{% url 'login' %}">
+        {% csrf_token %}
+        {% if error_message %}
+        <div class="error-message">{{ error_message }}</div>
+        {% endif %}
+
+        <div class="mb-3">
+            <label for="username" class="form-label">Username:</label>
+            <input type="text" name="username" class="form-control {% if error_message %}is-invalid{% endif %}" required>
         </div>
-    </div>
 
-    <!-- Bootstrap JS and dependencies -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.6.0/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-</body>
-</html>
+        <div class="mb-3">
+            <label for="password" class="form-label">Password:</label>
+            <input type="password" name="password" class="form-control {% if error_message %}is-invalid{% endif %}" required>
+        </div>
+
+        <button type="submit" class="btn btn-custom w-100 mb-3">Login</button>
+    </form>
+    <p>Don't have an account? <a href="{% url 'register' %}">Register here</a></p>
+    <a href="/auth/reset_password/" class="d-block mt-2">Forgot your password?</a>
+{% endblock %}

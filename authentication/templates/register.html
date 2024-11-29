@@ -1,152 +1,97 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register</title>
-    <style>
-        /* Top banner styling */
-        #top-banner {
-            background-color: #1DB954;  /* Background color for the banner */
-            color: white;  /* Text color */
-            padding: 20px;  /* Space around the content inside the banner */
-            /*text-align: left;*/
-            position: fixed;  /* Fix the banner at the top */
-            justify-content: space-between;
-            align-items: center;
-            top: 0;  /* Align it to the top of the page */
-            width: 100%;  /* Make it span the full width of the screen */
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);  /* Add some shadow for a subtle 3D effect */
-        }
+<!-- templates/register.html -->
+{% extends "base.html" %}
 
-        /* Styling for the title inside the banner */
-        #top-banner h1 {
-            margin: 0;  /* Remove default margin from the h1 */
-            margin-left: 15px;
-            text-align: left;
-            font-size: 1.5em;  /* Adjust font size */
-            font-family: 'Helvatica Neue', sans-serif;  /* Set the font */
-            color: #FFFFFF;
-        }
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: #f4f4f9;
-            color: #333;
-        }
+{% block title %}Register{% endblock %}
 
-        .container {
-            margin-top: 75px;
-            text-align: center;
-            background-color: #CCCCCC;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            padding: 40px;
-            width: 300px;
-        }
+{% block extra_styles %}
+<style>
+    /* Custom styling for register page */
+    .container {
+        max-width: 400px;
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        padding: 40px;
+    }
 
-        h1 {
-            margin-bottom: 20px;
-            font-size: 24px;
-            color: #1DB954;
-        }
+    .container h1 {
+        color: #1DB954;
+        font-size: 24px;
+        margin-bottom: 20px;
+    }
 
-        label {
-            display: block;
-            margin: 10px 0 5px;
-            font-size: 14px;
-            text-align: left;
-        }
+    .container label {
+        display: block;
+        margin-top: 10px;
+        font-size: 14px;
+        text-align: left;
+    }
 
-        input[type="text"],
-        input[type="password"] {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            margin-bottom: 15px;
-            font-size: 14px;
-        }
+    .container input[type="text"],
+    .container input[type="password"] {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        margin-top: 5px;
+        margin-bottom: 15px;
+        font-size: 14px;
+    }
 
-        input[type="submit"] {
-            width: 100%;
-            padding: 10px;
-            background-color: #1DB954;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-            font-size: 16px;
-        }
+    .container input[type="submit"] {
+        width: 100%;
+        padding: 10px;
+        background-color: #1DB954;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        font-size: 16px;
+    }
 
-        input[type="submit"]:hover {
-            background-color: #073625;
-        }
+    .container input[type="submit"]:hover {
+        background-color: #073625;
+    }
 
-        p {
-            margin-top: 10px;
-            font-size: 14px;
-        }
+    ul {
+        color: red;
+        margin-top: 10px;
+        text-align: left;
+    }
+</style>
+{% endblock %}
 
-        a {
-            color: #4a90e2;
-            text-decoration: none;
-        }
+{% block content %}
+    <h1>Register</h1>
+    <form method="POST" action="{% url 'register' %}">
+        {% csrf_token %}
 
-        a:hover {
-            text-decoration: underline;
-        }
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required>
 
-        ul {
-            color: red;
-            margin-top: 10px;
-            text-align: left;
-        }
-    </style>
-</head>
-    <!-- Top Banner -->
-  <header id="top-banner">
-    <h1>Atlanta Food Finder</h1>
-  </header>
-<body>
-    <div class="container">
-        <h1>Register</h1>
-        <form method="POST" action="{% url 'register' %}">
-            {% csrf_token %}
-            <label for="username">Username:</label>
-            <input type="text" id="username" name="username" required>
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required>
 
-            <label for="password">Password:</label>
-            <input type="password" id="password" name="password" required>
+        <label for="confirm_password">Confirm Password:</label>
+        <input type="password" id="confirm_password" name="confirm_password" required>
 
-            <label for="confirm_password">Confirm Password:</label>
-            <input type="password" id="confirm_password" name="confirm_password" required>
+        <label for="security_question">Security Question:</label>
+        <input type="text" id="security_question" name="security_question" required>
 
-            <label for="security_question">Security Question:</label>
-            <input type="text" id="security_question" name="security_question" required>
+        <label for="security_answer">Answer:</label>
+        <input type="text" id="security_answer" name="security_answer" required>
 
-            <label for="security_answer">Answer:</label>
-            <input type="text" id="security_answer" name="security_answer" required>
+        <input type="submit" value="Register" class="btn-custom">
+    </form>
 
-            <input type="submit" value="Register">
-        </form>
+    <p>Already have an account? <a href="{% url 'login' %}">Login here</a></p>
 
-        <p>Already have an account? <a href="{% url 'login' %}">Login here</a></p>
-
-        <!-- Optional: Display any error messages if present -->
-        {% if messages %}
-            <ul>
-                {% for message in messages %}
-                    <li>{{ message }}</li>
-                {% endfor %}
-            </ul>
-        {% endif %}
-    </div>
-</body>
-</html>
+    {% if messages %}
+        <ul>
+            {% for message in messages %}
+                <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+{% endblock %}
