@@ -1,11 +1,23 @@
 <!-- templates/register.html -->
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}Register{% endblock %}
 
 {% block extra_styles %}
 <style>
-    /* Custom styling for register page */
+    /* Background styling for register page */
+    body {
+        padding-top: 100px; /* Offset for fixed header */
+        color: #333;
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #f8f9fa;
+    }
+
+    /* Container styling */
     .container {
         max-width: 400px;
         background-color: #fff;
@@ -14,50 +26,36 @@
         padding: 40px;
     }
 
-    .container h1 {
-        color: #1DB954;
-        font-size: 24px;
+    h1 {
         margin-bottom: 20px;
+        font-size: 24px;
+        color: #1DB954;
     }
 
-    .container label {
-        display: block;
-        margin-top: 10px;
-        font-size: 14px;
-        text-align: left;
-    }
-
-    .container input[type="text"],
-    .container input[type="password"] {
-        width: 100%;
-        padding: 10px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        margin-top: 5px;
-        margin-bottom: 15px;
-        font-size: 14px;
-    }
-
-    .container input[type="submit"] {
-        width: 100%;
-        padding: 10px;
+    .btn-custom {
         background-color: #1DB954;
-        color: white;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
+        color: #fff;
         transition: background-color 0.3s ease;
+        border-radius: 5px;
+        padding: 10px 20px;
         font-size: 16px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
     }
 
-    .container input[type="submit"]:hover {
+    .btn-custom:hover {
         background-color: #073625;
     }
 
-    ul {
+    .footer {
+        margin-top: 20px;
+        font-size: 12px;
+        color: #777;
+    }
+
+    .error-message {
         color: red;
-        margin-top: 10px;
-        text-align: left;
+        font-weight: bold;
+        margin-bottom: 10px;
     }
 </style>
 {% endblock %}
@@ -67,22 +65,32 @@
     <form method="POST" action="{% url 'register' %}">
         {% csrf_token %}
 
-        <label for="username">Username:</label>
-        <input type="text" id="username" name="username" required>
+        <div class="mb-3">
+            <label for="username" class="form-label">Username:</label>
+            <input type="text" id="username" name="username" class="form-control" required>
+        </div>
 
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password" required>
+        <div class="mb-3">
+            <label for="password" class="form-label">Password:</label>
+            <input type="password" id="password" name="password" class="form-control" required>
+        </div>
 
-        <label for="confirm_password">Confirm Password:</label>
-        <input type="password" id="confirm_password" name="confirm_password" required>
+        <div class="mb-3">
+            <label for="confirm_password" class="form-label">Confirm Password:</label>
+            <input type="password" id="confirm_password" name="confirm_password" class="form-control" required>
+        </div>
 
-        <label for="security_question">Security Question:</label>
-        <input type="text" id="security_question" name="security_question" required>
+        <div class="mb-3">
+            <label for="security_question" class="form-label">Security Question:</label>
+            <input type="text" id="security_question" name="security_question" class="form-control" required>
+        </div>
 
-        <label for="security_answer">Answer:</label>
-        <input type="text" id="security_answer" name="security_answer" required>
+        <div class="mb-3">
+            <label for="security_answer" class="form-label">Answer:</label>
+            <input type="text" id="security_answer" name="security_answer" class="form-control" required>
+        </div>
 
-        <input type="submit" value="Register" class="btn-custom">
+        <button type="submit" class="btn btn-custom w-100 mb-3">Register</button>
     </form>
 
     <p>Already have an account? <a href="{% url 'login' %}">Login here</a></p>

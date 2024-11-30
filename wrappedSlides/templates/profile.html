@@ -23,9 +23,9 @@
                             <p>Followers: {{ slide.content.followers.total }}</p>
                         </div>
                     </div>
-                
+
                 {% elif slide.type == "top_tracks" %}
-                    <h3>Top Tracks</h3>
+                    <h3>These were your top 5 songs!</h3>
                     <ul class="item-list">
                         {% for track in slide.content %}
                             <li class="track">
