@@ -1,0 +1,44 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spotify Wrapped</title>
+    <link rel="stylesheet" href="{% static 'home.css' %}">
+</head>
+<body>
+    <div class="wrapper">
+        <div class="wrapper">
+        <!-- Header Section -->
+        <header>
+            <h1>Welcome to Wrapped!</h1>
+
+            <!-- Contact Button -->
+            <div class="contact-button-container">
+                <a href="#" class="contact-button">Contact the Developers</a>
+            </div>
+        </header>
+
+        <main>
+            <!-- Main Button -->
+            <div class="main-button-container">
+{#                <h2>Click to view your Wrapped</h2>#}
+                <a href="{% url 'spotify_login' %}" class="main-button">View Original Wrapped</a>
+            </div>
+
+            <!-- Customized Wrapped Section -->
+            <div class="custom-buttons-container">
+                <h2>Or...choose a customized Wrapped</h2>
+                <div class="custom-buttons">
+                    <a href="#" class="custom-button">Long-term</a>
+                    <a href="#" class="custom-button">Medium-term</a>
+                    <a href="#" class="custom-button">Short-term</a>
+                    <a href="#" class="custom-button1">Christmas</a>
+                    <a href="#" class="custom-button2">Halloween</a>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

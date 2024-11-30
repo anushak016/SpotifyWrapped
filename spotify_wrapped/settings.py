@@ -27,6 +27,8 @@ SECRET_KEY = 'django-insecure-)5)iwq7nw2tj)=#@4feyaau%-o_x-xvgqukvt$$szl091d==ty
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+USE_I18N = True
+
 
 ALLOWED_HOSTS = []
 
@@ -44,7 +46,14 @@ INSTALLED_APPS = [
     'wrappedSlides'
 ]
 
+LANGUAGES = [
+    ('en', 'English'),
+    ('es', 'Spanish'),
+    ('fr', 'French'),
+]
+
 MIDDLEWARE = [
+    'django.middleware.locale.LocaleMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
