@@ -24,6 +24,8 @@
             width: 100%;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
             z-index: 1000;
+            height: 70px; /* Add fixed height */
+            box-sizing: border-box; /* Include padding in height calculation */
         }
 
         #top-banner h1 {
@@ -31,7 +33,20 @@
             margin-left: 15px;
             font-size: 1.5em;
             font-family: 'Roboto', sans-serif;
-            color: #FFFFFF;
+            color: white;
+            transition: color 0.3s ease;
+        }
+
+        /* Direct color override for dark mode */
+        .dark-mode #top-banner h1,
+        .dark-mode #top-banner h1 a,
+        .dark-mode #top-banner h1 * {
+            color: black !important;
+        }
+
+        /* Hover effects */
+        #top-banner h1 a:hover {
+            opacity: 0.8;
         }
 
         /* Dark and Light Mode Styling */
@@ -60,6 +75,7 @@
             width: 100%;
             max-width: 600px; /* Increased width for wider forms */
             transition: background-color 0.3s;
+            box-sizing: border-box; /* Include padding and border in width calculation */
         }
 
         .dark-mode .custom-container {
@@ -87,13 +103,231 @@
             background-color: #073625;
         }
 
+        /* Button styling for top banner */
+        .top-banner-buttons {
+            display: flex;
+            align-items: center;
+            gap: 10px; /* Space between buttons */
+        }
+
+        .top-banner-buttons .btn-custom {
+            background-color: #1DB954;
+            color: #fff;
+            transition: background-color 0.3s ease;
+            border-radius: 5px;
+            padding: 10px 20px;
+            font-size: 14px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            border: none;
+            cursor: pointer;
+        }
+
+        .top-banner-buttons .btn-custom:hover {
+            background-color: #073625;
+        }
+
+        /* Dark mode button styling */
+        .dark-mode .top-banner-buttons .btn-custom {
+            background-color: #333;
+            color: #fff;
+        }
+
+        .dark-mode .top-banner-buttons .btn-custom:hover {
+            background-color: #444;
+        }
+
+        /* Christmas mode button styling */
+        .christmas-mode .top-banner-buttons .btn-custom {
+            background-color: #c41e3a;
+            color: #fff;
+        }
+
+        .christmas-mode .top-banner-buttons .btn-custom:hover {
+            background-color: #8b0000;
+        }
+
         /* Dropdown Styling */
         #theme-selector {
             background-color: white;
             border: none;
-            padding: 5px;
+            padding: 8px 12px;
             font-size: 14px;
             margin-right: 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            outline: none;
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24'%3E%3Cpath fill='%23333' d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            padding-right: 30px;
+            text-align: center;
+            width: fit-content; /* Make width fit the content */
+            min-width: 120px; /* Minimum width */
+            max-width: none; /* Remove max-width constraint */
+        }
+
+        #theme-selector option {
+            text-align: center;
+            padding: 8px;
+            width: 100%;
+        }
+
+        #theme-selector:hover {
+            background-color: #f5f5f5;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .dark-mode #theme-selector {
+            background-color: #333;
+            color: white;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24'%3E%3Cpath fill='%23fff' d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+        }
+
+        .dark-mode #theme-selector:hover {
+            background-color: #444;
+        }
+
+        /* Light mode input styling */
+        .form-control {
+            background-color: #fff;
+            color: #333;
+            border: 1px solid #ced4da;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            border-color: #1DB954;
+            box-shadow: 0 0 0 0.2rem rgba(29, 185, 84, 0.25);
+        }
+
+        .form-control::placeholder {
+            color: #999;
+        }
+
+        /* Dark mode input styling */
+        .dark-mode .form-control {
+            background-color: #2a2a2a;  /* Slightly lighter than container */
+            color: #fff;
+            border: 1px solid #444;
+        }
+
+        /* Dark mode focus state */
+        .dark-mode .form-control:focus {
+            background-color: #3a3a3a;  /* Even lighter when focused */
+            color: #fff;
+            border-color: #1DB954;
+            box-shadow: 0 0 0 0.2rem rgba(29, 185, 84, 0.25);
+        }
+
+        /* Dark mode placeholder */
+        .dark-mode .form-control::placeholder {
+            color: #bbb;  /* Lighter gray for better contrast */
+        }
+
+        /* Christmas theme styling */
+        .christmas-mode {
+            background-color: #034f1d;
+            color: #fff;
+        }
+
+        .christmas-mode #top-banner {
+            background-color: #c41e3a;
+            color: #fff;
+            border: none; /* Remove any border that might affect sizing */
+        }
+
+        .christmas-mode #top-banner h1 a {
+            color: #fff;
+        }
+
+        .christmas-mode .custom-container {
+            background-color: #ffffff;
+            color: #034f1d;
+            border: 3px solid #c41e3a;
+            /* Remove any additional padding or margin */
+            padding: 40px;
+            margin-top: 100px;
+            width: 100%;
+            max-width: 600px;
+        }
+
+        .christmas-mode .btn-custom {
+            background-color: #c41e3a;
+            color: #fff;
+        }
+
+        .christmas-mode .btn-custom:hover {
+            background-color: #8b0000;
+        }
+
+        .christmas-mode .form-control {
+            background-color: #fff;
+            color: #034f1d;
+            border: 2px solid #c41e3a;
+        }
+
+        .christmas-mode .form-control:focus {
+            border-color: #034f1d;
+            box-shadow: 0 0 0 0.2rem rgba(196, 30, 58, 0.25);
+        }
+
+        .christmas-mode #theme-selector {
+            background-color: #fff;
+            color: #034f1d;
+            border: 2px solid #c41e3a;
+        }
+
+        .christmas-mode #theme-selector:hover {
+            background-color: #f8f9fa;
+        }
+
+        .christmas-mode h1 {
+            color: #034f1d;  /* Christmas green color */
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+
+        /* Footer styling */
+        footer {
+            margin-top: 25px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            text-align: center;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .dark-mode footer {
+            background-color: #121212;
+            color: #fff;
+        }
+
+        .christmas-mode footer {
+            background-color: #034f1d;
+            color: #fff;
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .footer-content .footer-text {
+            flex: 1;
+            text-align: left;
+        }
+
+        .footer-content .footer-dropdown {
+            flex: 1;
+            text-align: right;
         }
     </style>
 
@@ -103,40 +337,58 @@
 <body>
     <!-- Top Banner -->
     <header id="top-banner">
-        <h1>Wrapped</h1>
-        
-        <!-- Dark Mode Dropdown -->
-        <select id="theme-selector" onchange="changeTheme(this.value)">
-            <option value="light">Light Mode</option>
-            <option value="dark">Dark Mode</option>
-        </select>
+        <h1><a href="{% url 'home' %}" style="text-decoration: none; color: white; cursor: pointer;">Wrapped</a></h1>
+
+        <!-- Register and Login Buttons -->
+        <div class="top-banner-buttons">
+            <a href="{% url 'register' %}" class="btn btn-custom">Register</a>
+            <a href="{% url 'login' %}" class="btn btn-custom">Login</a>
+        </div>
     </header>
 
     <div class="custom-container">
         {% block content %}{% endblock %}
     </div>
 
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-text">
+                &copy; 2024 CS2340 TEAM 50
+            </div>
+            <div class="footer-dropdown">
+                <select id="theme-selector" onchange="changeTheme(this.value)">
+                    <option value="light">Light Mode</option>
+                    <option value="dark">Dark Mode</option>
+                    <option value="christmas">Christmas Mode</option>
+                </select>
+            </div>
+        </div>
+    </footer>
+
     <script>
-        // Function to switch between dark and light mode
+        // Function to switch between themes
         function changeTheme(theme) {
+            // Remove all theme classes first
+            document.body.classList.remove('dark-mode', 'christmas-mode');
+            
+            // Add the selected theme class
             if (theme === "dark") {
-                document.body.classList.add("dark-mode");
-                localStorage.setItem("theme", "dark");
-            } else {
-                document.body.classList.remove("dark-mode");
-                localStorage.setItem("theme", "light");
+                document.body.classList.add('dark-mode');
+            } else if (theme === "christmas") {
+                document.body.classList.add('christmas-mode');
             }
+            
+            // Save the theme preference
+            localStorage.setItem("theme", theme);
         }
 
         // Apply the saved theme on page load
         window.onload = function() {
             const savedTheme = localStorage.getItem("theme");
-            if (savedTheme === "dark") {
-                document.body.classList.add("dark-mode");
-                document.getElementById("theme-selector").value = "dark";
-            } else {
-                document.body.classList.remove("dark-mode");
-                document.getElementById("theme-selector").value = "light";
+            if (savedTheme) {
+                document.getElementById("theme-selector").value = savedTheme;
+                changeTheme(savedTheme);
             }
         };
     </script>

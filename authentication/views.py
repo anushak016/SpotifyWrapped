@@ -43,30 +43,26 @@ def logout_view(request):
     return redirect('/auth/login/')
 
 def register_view(request):
-    # Check if the user has just registered
     if request.session.get('just_registered'):
-        # Log out the user
         logout(request)
-        # Remove the flag after logging out
         request.session.pop('just_registered', None)
-        return redirect('login')  # Redirect them to the login page or other safe page
+        return redirect('login')
 
     if request.method == 'POST':
         username = request.POST['username']
+        email = request.POST['email']
         password = request.POST['password']
         confirm_password = request.POST['confirm_password']
         security_question = request.POST['security_question']
         security_answer = request.POST['security_answer']
         error_message = None
 
-        # Check if the username already exists
         if User.objects.filter(username=username).exists():
             error_message = 'Username already exists. Please choose another one.'
-
-        # Check if the passwords match
+        elif Profile.objects.filter(email=email).exists():
+            error_message = 'Email already exists. Please choose another one.'
         elif password != confirm_password:
             error_message = 'Passwords do not match.'
-        
         elif not security_question or not security_answer:
             error_message = 'Please provide a security question and answer.'
 
@@ -74,25 +70,25 @@ def register_view(request):
             return render(request, 'register.html', {'error_message': error_message})
 
         try:
-            # Create the user
             user = User.objects.create_user(username=username, password=password)
             user.save()
-
-            # Create or get the user's profile with security question and answer
-            profile, created = Profile.objects.get_or_create(user=user)
+            # Profile creation will be handled by the signal
+            profile = Profile.objects.get(user=user)
+            profile.email = email
             profile.security_question = security_question
             profile.security_answer = security_answer
-            profile.save(update_fields=['security_question', 'security_answer'])  # Save the profile
+            profile.save()
             request.session['just_registered'] = True
             return redirect('login_user', username=username)
-
         except IntegrityError as e:
-            error_message = 'An error occurred during registration. Please try again.'
+            error_message = f'IntegrityError: {e}'
+            print(error_message)
             return render(request, 'register.html', {'error_message': error_message})
         except Exception as e:
-            print(f"Error creating user: {e}")
-            error_message = 'An error occurred during registration. Please try again.'
+            error_message = f'Exception: {e}'
+            print(error_message)
             return render(request, 'register.html', {'error_message': error_message})
+
     return render(request, 'register.html')
 
 def login_user(request, username):
@@ -126,7 +122,6 @@ def reset_password_view(request):
     # Check if the user has just registered
     if request.session.get('just_registered'):
         # Log out the user
-        logout(request)
         # Remove the flag after logging out
         request.session.pop('just_registered', None)
         return redirect('login')  # Redirect them to the login page or other safe page
