@@ -1,6 +1,8 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Timeline Game</title>
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
     <style>
@@ -27,6 +29,14 @@
             border-radius: 5px;
             cursor: move;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.2s ease;
+        }
+        .song:hover {
+            background-color: #e0e0e0;
+        }
+        .sortable-ghost {
+            background-color: #007bff !important;
+            color: #fff !important;
         }
         button {
             display: block;
@@ -41,6 +51,11 @@
         }
         button:hover {
             background-color: #0056b3;
+        }
+        @media (max-width: 768px) {
+            .song-list {
+                width: 90%;
+            }
         }
     </style>
 </head>
@@ -83,8 +98,8 @@
             fetch(this.action, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json', // Send data as JSON
-                    'X-CSRFToken': csrfToken // Include CSRF token
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken
                 },
                 body: JSON.stringify({ track_order: JSON.parse(songOrder) }) // Parse and send the song order
             })
@@ -93,7 +108,54 @@
                 if (data.error) {
                     alert(`Error: ${data.error}`);
                 } else {
+                    // Display the score
                     alert(`You scored ${data.score}/${data.total}!`);
+
+                    // Show the correct order
+                    const correctOrderList = document.createElement('ul');
+                    correctOrderList.style.marginTop = '20px';
+                    correctOrderList.style.listStyle = 'none';
+                    correctOrderList.style.padding = '0';
+                    correctOrderList.style.textAlign = 'center';
+
+                    data.correct_order.forEach(trackId => {
+                        const track = [...document.querySelectorAll('.song')].find(song => song.dataset.id === trackId);
+                        if (track) {
+                            const listItem = document.createElement('li');
+                            listItem.innerText = track.textContent;
+                            listItem.style.padding = '10px';
+                            listItem.style.backgroundColor = '#d4edda';
+                            listItem.style.margin = '5px 0';
+                            listItem.style.borderRadius = '5px';
+
+                            correctOrderList.appendChild(listItem);
+                        }
+                    });
+
+                    const feedback = document.createElement('p');
+                    feedback.innerText = "Here is the correct order!";
+                    feedback.style.textAlign = 'center';
+                    feedback.style.fontWeight = 'bold';
+                    feedback.style.marginTop = '20px';
+
+                    document.body.appendChild(feedback);
+                    document.body.appendChild(correctOrderList);
+
+                    // Add a replay button
+                    const replayButton = document.createElement('button');
+                    replayButton.innerText = 'Play Again';
+                    replayButton.style.display = 'block';
+                    replayButton.style.margin = '20px auto';
+                    replayButton.style.padding = '10px 20px';
+                    replayButton.style.fontSize = '16px';
+                    replayButton.style.color = '#fff';
+                    replayButton.style.backgroundColor = '#28a745';
+                    replayButton.style.border = 'none';
+                    replayButton.style.borderRadius = '5px';
+                    replayButton.style.cursor = 'pointer';
+
+                    replayButton.onclick = () => window.location.reload();
+                    document.body.appendChild(replayButton);
                 }
             })
             .catch(error => {
