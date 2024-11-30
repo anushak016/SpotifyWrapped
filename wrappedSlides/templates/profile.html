@@ -11,7 +11,8 @@
     <div id="slide-show">
         {% for slide in slides %}
             <div class="slide{% if forloop.first %} active{% endif %}">
-                <h2>{{ slide.title }}</h2>
+{#                <h2>{{ slide.title }}</h2>#}
+                <h2>Your Wrapped</h2>
 
                 {% if slide.type == "profile" %}
                     <div class="profile">
@@ -25,7 +26,7 @@
                     </div>
 
                 {% elif slide.type == "top_tracks" %}
-                    <h3>These were your top 5 songs!</h3>
+                    <h3>You listened to a lot of songs...but these were on repeat!</h3>
                     <ul class="item-list">
                         {% for track in slide.content %}
                             <li class="track">
@@ -42,7 +43,7 @@
                     </ul>
 
                 {% elif slide.type == "top_artists" %}
-                    <h3>Top Artists</h3>
+                    <h3>Some artists really caught your eye. These are your top 5.</h3>
                     <ul class="item-list">
                         {% for artist in slide.content %}
                             <li class="artist">
@@ -59,7 +60,7 @@
                     </ul>
 
                 {% elif slide.type == "playlists" %}
-                    <h3>Your Playlists</h3>
+                    <h3>You curated some nice playlists! Here are some of your faves.</h3>
                     <ul class="item-list">
                         {% for playlist in slide.content %}
                             <li class="playlist">
@@ -73,6 +74,17 @@
                             </li>
                         {% endfor %}
                     </ul>
+
+                {% elif slide.type == "top_genres" %}
+                    <h3>You really explored all the genres, let's take a look!</h3>
+                        <ul class = "top-genres">
+                            {% for genre in slide.content %}
+                                <li class="genre">
+                                    <span class="genre-name" style="font-size: {{ genre.count|add:10 }}px;">{{ genre.genre }}</span>
+                                    <span class="genre-count">({{ genre.count }} artists)</span>
+                                </li>
+                            {% endfor %}
+                        </ul>
                 {% endif %}
             </div>
         {% endfor %}

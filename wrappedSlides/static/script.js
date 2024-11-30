@@ -3,6 +3,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const slides = document.querySelectorAll(".slide");
     const totalSlides = slides.length;
 
+
     function showSlide(index) {
         slides.forEach((slide, i) => {
             slide.classList.toggle("active", i === index);
