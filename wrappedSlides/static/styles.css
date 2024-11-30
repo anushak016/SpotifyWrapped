@@ -1,0 +1,206 @@
+/* styles.css */
+body {
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(135deg, #FFDEE9, #B5FFFC); /* Vibrant pastel gradient */
+    color: #333333;
+}
+
+#slide-show {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    position: relative;
+    text-align: center;
+}
+
+h2, h3 {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #FF6F61; /* Bright coral */
+    text-shadow: 2px 2px #FF9A8B;
+}
+
+h3 {
+    font-size: 2rem;
+    color: #FF9671; /* Slightly softer coral */
+}
+
+.profile {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 30px;
+    justify-content: center;
+    text-align: left;
+}
+
+.profile img {
+    border-radius: 50%;
+    width: 120px;
+    height: 120px;
+    border: 4px solid #FF9A8B; /* Fun border color */
+    object-fit: cover;
+    box-shadow: 0 4px 10px rgba(255, 154, 139, 0.6);
+}
+
+.profile h3 {
+    font-size: 1.8rem;
+    margin: 10px 0;
+    color: #FF6F61;
+}
+
+.profile p {
+    font-size: 1rem;
+    color: #666666; /* Secondary text color */
+}
+
+.item-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.item-list li {
+    background: linear-gradient(135deg, #FF9A8B, #FFD5CD); /* Soft gradient for items */
+    padding: 15px;
+    border-radius: 12px;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.item-list li:hover {
+    transform: scale(1.05); /* Add pop effect */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2); /* Enhance shadow */
+}
+
+.item-list li img {
+    border-radius: 10px;
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border: 3px solid #FF6F61; /* Vibrant border */
+    box-shadow: 0 4px 10px rgba(255, 111, 97, 0.5);
+}
+
+.track-info, .artist-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.item-title {
+    font-weight: bold;
+    font-size: 1.2rem;
+    margin-bottom: 5px;
+    color: #333333;
+}
+
+.artist, .playlist {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.track img {
+    width: 60px;
+    height: 60px;
+    border-radius: 10px;
+    object-fit: cover;
+    border: 3px solid #FFD5CD;
+}
+
+button {
+    background: linear-gradient(135deg, #FF6F61, #FF9671); /* Gradient button */
+    color: white;
+    border: none;
+    padding: 15px;
+    margin: 10px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    width: 160px;
+    transition: background 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+button:hover {
+    background: linear-gradient(135deg, #FF9671, #FFDEE9); /* Softer hover gradient */
+    transform: scale(1.05); /* Slight zoom */
+}
+
+button#previous {
+    position: fixed;
+    bottom: 30px;
+    left: 30px;
+    z-index: 10;
+}
+
+button#next {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    z-index: 10;
+}
+
+#slide-show .slide {
+    display: none;
+    animation: fadeIn 0.5s ease;
+}
+
+#slide-show .slide.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.top-genres {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+}
+
+.genre {
+    display: inline-block;
+    background: linear-gradient(45deg, #f093fb, #f5576c);
+    color: white;
+    padding: 10px 15px;
+    border-radius: 20px;
+    font-weight: bold;
+    transition: transform 0.3s;
+    text-align: center;
+}
+
+.genre:hover {
+    transform: scale(1.1);
+}
+
+.genre-name {
+    display: block;
+    font-size: 1.2rem;
+}
+
+.genre-count {
+    display: block;
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.8);
+}
+
