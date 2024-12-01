@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Your Wrapped</title>
     <link rel="stylesheet" href="{% static 'styles.css' %}">
+    <script src="https://sdk.scdn.co/spotify-player.js"></script>
+
 </head>
 <body>
     <div id="slide-show">
@@ -24,7 +26,7 @@
                         </div>
                     </div>
 
-                {% elif slide.type == "song_transition" %}
+                {% elif slide.type == "song_transitions" %}
                     <h3>There's over 100 million songs on Spotify.
                         Are you ready to find out which ones you liked the most?</h3>
 
@@ -64,10 +66,18 @@
 
                 {% elif slide.type == "song_playback" %}
                     <h3>Take a trip down memory lane and revisit those songs you love.</h3>
-                        <div id="spotify-player">
+                    <div id="spotify-player">
                         <div id="spotify-player-container"></div>
                         <button id="play-top-songs">Play Top 3 Songs</button>
                     </div>
+                <script>
+                    // Ensure this block is only included once
+                    const topTracks = [
+                    {% for track in slide.content|slice:":3" %}
+                    "{{ track.uri }}"{% if not forloop.last %}, {% endif %}
+                    {% endfor %}
+                    ];
+                </script>
 
                 {% elif slide.type == "playlists" %}
                     <h3>You curated some nice playlists! Here are some of your faves.</h3>
