@@ -7,73 +7,7 @@
     <title>Your Wrapped</title>
     <link rel="stylesheet" href="{% static 'styles.css' %}">
     <script src="https://sdk.scdn.co/spotify-player.js"></script>
-    <script>
-        window.onSpotifyWebPlaybackSDKReady = () => {
-          const token = request.session.get("access_token")
-          const player = new Spotify.Player({
-            name: 'Web Playback SDK Quick Start Player',
-            getOAuthToken: cb => { cb(token); },
-            volume: 0.5
-          });
-
-          player.addListener('ready', ({ device_id }) => {
-                console.log('Ready with Device ID', device_id);
-            });
-
-            // Not Ready
-          player.addListener('not_ready', ({ device_id }) => {
-                console.log('Device ID has gone offline', device_id);
-            });
-        
-          document.getElementById('togglePlay').onclick = function() {
-              player.togglePlay();
-            };
-
-          player.connect().then(success => {
-            if (success) {
-              console.log('The Web Playback SDK successfully connected to Spotify!');
-            }
-          });
-
-          // Play a specific track when clicked
-    document.querySelectorAll('.track').forEach(trackElement => {
-      trackElement.addEventListener('click', function () {
-        const trackUri = this.getAttribute('data-uri');
-        currentTrackUri = trackUri;
-
-        player._options.getOAuthToken(token => {
-          fetch(`https://api.spotify.com/v1/me/player/play`, {
-            method: 'PUT',
-            headers: {
-              'Authorization': `Bearer ${token}`,
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ uris: [trackUri] })
-          }).then(() => {
-            const trackTitle = this.querySelector('.item-title').innerText;
-            const trackArtist = this.querySelector('.track-info p:nth-child(2)').innerText;
-            document.getElementById('track-title').innerText = trackTitle;
-            document.getElementById('track-artist').innerText = trackArtist;
-          });
-        });
-      });
-    });
-
-    // Play/Pause toggle
-    document.getElementById('playPause').addEventListener('click', () => {
-      player.togglePlay();
-    });
-
-    // Next and Previous (you can customize logic for playlist handling)
-    document.getElementById('nextTrack').addEventListener('click', () => {
-      player.nextTrack();
-    });
-
-    document.getElementById('prevTrack').addEventListener('click', () => {
-      player.previousTrack();
-    });
-        };
-      </script>
+    
 </head>
 <body>
     <div id="slide-show">
@@ -157,6 +91,86 @@
                       </li>
                     {% endfor %}
                   </ul>
+                  <script>
+                    window.onSpotifyWebPlaybackSDKReady = () => {
+                      const token = "{{ access_token }}";
+                      const player = new Spotify.Player({
+                        name: 'Web Playback SDK Quick Start Player',
+                        getOAuthToken: cb => { cb(token); },
+                        volume: 0.5
+                      });
+            
+                      player.addListener('ready', ({ device_id }) => {
+                            console.log('Ready with Device ID', device_id);
+                        });
+                      window.deviceId = device_id;
+                    
+                      document.getElementById('togglePlay').onclick = function() {
+                          player.togglePlay();
+                        };
+            
+                      player.connect().then(success => {
+                        if (success) {
+                          console.log('The Web Playback SDK successfully connected to Spotify!');
+                        }
+                      });
+
+                      player._options.getOAuthToken(token => {
+                        fetch(`https://api.spotify.com/v1/me/player/play?device_id=${window.deviceId}`, {
+                            method: 'PUT',
+                            headers: {
+                                'Authorization': `Bearer ${token}`,
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({ uris: [trackUri] })
+                        }).then(response => {
+                            if (response.ok) {
+                                console.log('Playback started!');
+                        } else {
+                            console.error('Playback failed', response);
+                        }
+                    });
+                });
+            
+                      // Play a specific track when clicked
+                document.querySelectorAll('.track').forEach(trackElement => {
+                  trackElement.addEventListener('click', function () {
+                    const trackUri = this.getAttribute('data-uri');
+                    currentTrackUri = trackUri;
+            
+                    player._options.getOAuthToken(token => {
+                      fetch(`https://api.spotify.com/v1/me/player/play`, {
+                        method: 'PUT',
+                        headers: {
+                          'Authorization': `Bearer ${token}`,
+                          'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ uris: [trackUri] })
+                      }).then(() => {
+                        const trackTitle = this.querySelector('.item-title').innerText;
+                        const trackArtist = this.querySelector('.track-info p:nth-child(2)').innerText;
+                        document.getElementById('track-title').innerText = trackTitle;
+                        document.getElementById('track-artist').innerText = trackArtist;
+                      });
+                    });
+                  });
+                });
+            
+                // Play/Pause toggle
+                document.getElementById('playPause').addEventListener('click', () => {
+                  player.togglePlay();
+                });
+            
+                // Next and Previous (you can customize logic for playlist handling)
+                document.getElementById('nextTrack').addEventListener('click', () => {
+                  player.nextTrack();
+                });
+            
+                document.getElementById('prevTrack').addEventListener('click', () => {
+                  player.previousTrack();
+                });
+                    };
+                  </script>
 
                 {% elif slide.type == "playlists" %}
                     <h3>You curated some nice playlists! Here are some of your faves.</h3>
@@ -200,4 +214,3 @@
     <script src="{% static 'script.js' %}"></script>
 </body>
 </html>
-
