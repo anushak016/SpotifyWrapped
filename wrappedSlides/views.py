@@ -6,7 +6,17 @@ from django.conf import settings
 from collections import Counter
 import datetime  # Add this import
 
-# Create your views here.
+def spotify_login_required(view_func):
+    @wraps(view_func)
+    def wrapper(request, *args, **kwargs):
+        # Check if the user is authenticated (access_token in session)
+        if not request.session.get("access_token"):
+            # Save the intended destination in the session
+            request.session['redirect_after_login'] = request.path
+            # Redirect to the Spotify login URL
+            return redirect('spotify_login')  # Replace with your login URL name
+        return view_func(request, *args, **kwargs)
+    return wrapper
 
 def home(request):
     # Allow access to home page without authentication
