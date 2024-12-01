@@ -394,5 +394,5 @@ def contact(request):
 
         Returns:
             HttpResponse: A rendered response using the `contact.html` template.
-    " ""
+    """
     return render(request, "contact.html")
