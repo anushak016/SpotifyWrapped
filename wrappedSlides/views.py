@@ -170,3 +170,6 @@ def halloween(request):
 @spotify_login_required
 def holiday(request):
     return wrapped(request, "default", "christmas")
+
+def contact(request):
+    return render(request, "contact.html")

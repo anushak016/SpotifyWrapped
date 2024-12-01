@@ -12,4 +12,5 @@ urlpatterns = [
     path("christmas", views.holiday, name="christmas"),
     path("halloween", views.halloween, name="halloween"),
     path("homepage/", views.home, name="homepage"),
+    path("contact/", views.contact, name="contact"),
 ]
