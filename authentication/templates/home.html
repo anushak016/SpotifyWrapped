@@ -70,7 +70,10 @@
     <p>Click below to see your personalized Wrapped experience.</p>
     <a href="{% url 'spotify_login' %}" class="start-button">See My Wrapped</a>
     <div class="main-button-container">
-        <a href="{% url 'spotify_callback' %}" class="main-button">View Original Wrapped</a>
+        <a href="{% url 'wrapped' %}" class="main-button">View Original Wrapped</a>
+    </div>
+    <div class="main-button-container">
+        <a href="{% url 'wrapped' %}" class="main-button">View Original Wrapped</a>
     </div>
     <div class="custom-buttons-container">
         <h2>Or...choose a customized Wrapped</h2>
