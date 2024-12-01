@@ -1,13 +1,21 @@
+# The `render.yaml` file defines the configuration for the Render deployment
+
+# This is the service configuration for the web app
 services:
-  - name: Spotify-Wrapped
-    type: web
-    env: python
-    buildCommand: "pip install -r requirements.txt"
-    startCommand: "gunicorn Spotify-Wrapped.wsgi:application"
-    plan: free
-    autoDeploy: true
+  - name: Spotify-Wrapped  #The name of the service on Render
+    type: web # Defines this service as a web service
+    env: python # Specifies the environment as Python
+    buildCommand: "pip install -r requirements.txt" # Command to install dependencies
+    startCommand: "gunicorn Spotify-Wrapped.wsgi:application" # Command to install dependencies
+    plan: free # The database plan to use (e.g., free, shared, standard)
+    autoDeploy: true # Whether to automatically build the application by running the build commands defined
     envVars:
       - key: SECRET_KEY
         sync: false
       - key: DJANGO_SETTINGS_MODULE
         value: "Spotify-Wrapped.settings"
+databases:
+  - name: spotify-wrapped-db  # Name of the database
+    plan: free  # The database plan to use (e.g., free, shared, standard)
+    region: ohio # The region for the database instance
+    autoMigrate: true  # Whether to enable automatic migrations
