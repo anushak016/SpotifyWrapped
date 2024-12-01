@@ -61,6 +61,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'wrappedSlides.middleware.SpotifyAuthMiddleware',
 ]
 
 ROOT_URLCONF = 'spotify_wrapped.urls'
@@ -142,3 +143,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 SPOTIFY_CLIENT_ID = os.getenv("SPOTIFY_CLIENT_ID")
 SPOTIFY_CLIENT_SECRET = os.getenv("SPOTIFY_CLIENT_SECRET")
 SPOTIFY_REDIRECT_URI = "http://localhost:8000/spotify/redirect"
+
+# Add this near the bottom of settings.py
+LOGIN_URL = '/auth/login/'

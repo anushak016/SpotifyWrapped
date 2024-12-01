@@ -6,9 +6,10 @@ from .models import Profile
 
 @receiver(post_save, sender=User)
 def create_profile(sender, instance, created, **kwargs):
-    if created:
-        Profile.objects.get_or_create(user=instance)
+    # Remove the automatic profile creation since we'll handle it in the view
+    pass
 
 @receiver(post_save, sender=User)
 def save_profile(sender, instance, **kwargs):
-    instance.profile.save()
+    if hasattr(instance, 'profile'):
+        instance.profile.save()

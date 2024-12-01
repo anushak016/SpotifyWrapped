@@ -37,7 +37,7 @@
         color: #666;
     }
 
-    .start-button {
+    .start-button, .main-button, .custom-button, .custom-button1, .custom-button2 {
         background-color: #1DB954;
         color: #fff;
         transition: background-color 0.3s ease;
@@ -49,9 +49,11 @@
         width: 100%;
         cursor: pointer;
         margin-bottom: 10px;
+        text-decoration: none;
+        display: inline-block;
     }
 
-    .start-button:hover {
+    .start-button:hover, .main-button:hover, .custom-button:hover, .custom-button1:hover, .custom-button2:hover {
         background-color: #073625;
     }
 
@@ -66,10 +68,38 @@
 {% block content %}
     <h1>Welcome To Spotify Wrapped</h1>
     <p>Click below to see your personalized Wrapped experience.</p>
-    <a href="{% url 'spotify_login' %}" class="d-block">
-        <button class="start-button">See My Wrapped</button>
-    </a>
+    <a href="{% url 'spotify_login' %}" class="start-button">See My Wrapped</a>
+    <div class="main-button-container">
+        <a href="{% url 'spotify_callback' %}" class="main-button">View Original Wrapped</a>
+    </div>
+    <div class="custom-buttons-container">
+        <h2>Or...choose a customized Wrapped</h2>
+        <div class="custom-buttons">
+            <a href="{% url 'long_term' %}" class="custom-button">Long-term</a>
+            <a href="{% url 'medium_term' %}" class="custom-button">Medium-term</a>
+            <a href="{% url 'short_term' %}" class="custom-button">Short-term</a>
+            <a href="{% url 'christmas' %}" class="custom-button1">Christmas</a>
+            <a href="{% url 'halloween' %}" class="custom-button2">Halloween</a>
+        </div>
+    </div>
     <div class="footer">
         <p>&copy; 2024 CS2340 TEAM 50</p>
     </div>
 {% endblock %}
+
+<script>
+function togglePassword(element) {
+    const passwordInput = element.previousElementSibling;
+    const icon = element.querySelector('i');
+    
+    if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        icon.classList.remove('fa-eye-slash');
+        icon.classList.add('fa-eye');
+    } else {
+        passwordInput.type = 'password';
+        icon.classList.remove('fa-eye');
+        icon.classList.add('fa-eye-slash');
+    }
+}
+</script>

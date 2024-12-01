@@ -6,30 +6,53 @@
 
 {% block extra_styles %}
 <style>
-    /* Background styling for register page */
+    /* Background styling for login/register page */
     body {
-        padding-top: 100px; /* Offset for fixed header */
-        color: #333;
-        height: 100vh;
+        min-height: 100vh;
         display: flex;
-        align-items: center;
-        justify-content: center;
+        flex-direction: column;
         background-color: #f8f9fa;
+        margin: 0;
+        padding: 0;
+        font-family: 'Plus Jakarta Sans', sans-serif;
     }
 
     /* Container styling */
-    .container {
-        max-width: 400px;
+    .custom-container {
+        flex: 1;
+        margin-top: 100px; /* Space for header */
+        margin-bottom: 50px; /* Space above footer */
+        text-align: center;
         background-color: #fff;
         border-radius: 10px;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         padding: 40px;
+        width: 100%;
+        max-width: 600px;
+        transition: background-color 0.3s;
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
     }
 
     h1 {
         margin-bottom: 20px;
-        font-size: 24px;
+        font-size: 32px;
+        font-weight: 600;
+        font-family: 'Metropolis', sans-serif;
         color: #1DB954;
+    }
+
+    .dark-mode h1 {
+        color: #1DB954; /* Use light mode green in dark mode */
+    }
+
+    .christmas-mode h1 {
+        color: #034f1d; /* Christmas green */
+        font-size: 32px; /* Match the new size */
+        font-weight: 600; /* Match the new weight */
+        font-family: 'Metropolis', sans-serif; /* Keep font family consistent */
     }
 
     .btn-custom {
@@ -40,6 +63,9 @@
         padding: 10px 20px;
         font-size: 16px;
         box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        border: none;
+        width: 100%;
+        margin: 20px 0;
     }
 
     .btn-custom:hover {
@@ -57,11 +83,97 @@
         font-weight: bold;
         margin-bottom: 10px;
     }
+
+    /* Ensure footer stays at bottom */
+    footer {
+        margin-top: auto;
+        position: static;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        background-color: #1DB954;
+        padding: 20px;
+        box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+        z-index: 1000;
+    }
+
+    /* Form label styling */
+    .form-label {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        display: block;
+        margin-top: 10px;
+        font-size: 16px; /* Increase caption size */
+        text-align: left;
+        font-weight: 500;
+    }
+
+    /* Input placeholder styling */
+    .form-control::placeholder {
+        font-size: 16px; /* Match caption size */
+        font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    .password-toggle {
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        cursor: pointer;
+        user-select: none;
+        color: #666;
+    }
+
+    .password-toggle:hover {
+        color: #1DB954;
+    }
+
+    .password-input-container {
+        position: relative;
+        width: 100%;
+    }
+
+    .form-control {
+        padding-right: 35px !important;
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ced4da;
+        border-radius: 5px;
+        margin-top: 5px;
+        margin-bottom: 15px;
+        font-size: 14px;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    /* Add to both login.html and register.html styles */
+    .form-control::-ms-reveal,
+    .form-control::-ms-clear {
+        display: none;
+    }
+
+    /* Update link styling */
+    a {
+        color: #1DB954;
+        text-decoration: none;
+    }
+
+    a:hover {
+        color: #073625;
+        text-decoration: underline;
+    }
+
+    /* Christmas mode link styling */
+    .christmas-mode a {
+        color: #c41e3a !important; /* Christmas red */
+    }
+
+    .christmas-mode a:hover {
+        color: #8b0000 !important; /* Darker Christmas red */
+    }
 </style>
 {% endblock %}
 
 {% block content %}
-    <h1>Register</h1>
+    <h1>Register New Account</h1>
     <form method="POST" action="{% url 'register' %}">
         {% csrf_token %}
         {% if error_message %}
@@ -70,32 +182,72 @@
 
         <div class="mb-3">
             <label for="username" class="form-label">Username:</label>
-            <input type="text" id="username" name="username" class="form-control" required>
+            <input type="text" 
+                   id="username" 
+                   name="username" 
+                   class="form-control" 
+                   placeholder="Choose a username"
+                   required>
         </div>
 
         <div class="mb-3">
             <label for="email" class="form-label">Email:</label>
-            <input type="email" id="email" name="email" class="form-control" required>
+            <input type="email" 
+                   id="email" 
+                   name="email" 
+                   class="form-control" 
+                   placeholder="Enter your email address"
+                   required>
         </div>
 
         <div class="mb-3">
             <label for="password" class="form-label">Password:</label>
-            <input type="password" id="password" name="password" class="form-control" required>
+            <div class="password-input-container">
+                <input type="password" 
+                       id="password" 
+                       name="password" 
+                       class="form-control {% if error_message %}is-invalid{% endif %}" 
+                       placeholder="Enter your password"
+                       required>
+                <span class="password-toggle" onclick="togglePassword(this)">
+                    <i class="fas fa-eye-slash"></i>
+                </span>
+            </div>
         </div>
 
         <div class="mb-3">
             <label for="confirm_password" class="form-label">Confirm Password:</label>
-            <input type="password" id="confirm_password" name="confirm_password" class="form-control" required>
+            <div class="password-input-container">
+                <input type="password" 
+                       id="confirm_password" 
+                       name="confirm_password" 
+                       class="form-control" 
+                       placeholder="Confirm your password"
+                       required>
+                <span class="password-toggle" onclick="togglePassword(this)">
+                    <i class="fas fa-eye-slash"></i>
+                </span>
+            </div>
         </div>
 
         <div class="mb-3">
             <label for="security_question" class="form-label">Security Question:</label>
-            <input type="text" id="security_question" name="security_question" class="form-control" required>
+            <input type="text" 
+                   id="security_question" 
+                   name="security_question" 
+                   class="form-control" 
+                   placeholder="Enter a security question"
+                   required>
         </div>
 
         <div class="mb-3">
             <label for="security_answer" class="form-label">Answer:</label>
-            <input type="text" id="security_answer" name="security_answer" class="form-control" required>
+            <input type="text" 
+                   id="security_answer" 
+                   name="security_answer" 
+                   class="form-control" 
+                   placeholder="Enter your answer"
+                   required>
         </div>
 
         <button type="submit" class="btn btn-custom w-100 mb-3">Register</button>
@@ -110,4 +262,23 @@
             {% endfor %}
         </ul>
     {% endif %}
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+function togglePassword(element) {
+    const passwordInput = element.previousElementSibling;
+    const icon = element.querySelector('i');
+    
+    if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        icon.classList.remove('fa-eye-slash');
+        icon.classList.add('fa-eye');
+    } else {
+        passwordInput.type = 'password';
+        icon.classList.remove('fa-eye');
+        icon.classList.add('fa-eye-slash');
+    }
+}
+</script>
 {% endblock %}

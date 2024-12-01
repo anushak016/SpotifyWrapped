@@ -2,9 +2,12 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponse
+from django.conf import settings  # Add this import
 from .models import Profile
 from django.db import IntegrityError
 from django.urls import reverse
+from django.utils import timezone
+import datetime
 
 
 def home_view(request):
@@ -18,36 +21,46 @@ def home_view(request):
     return render(request, 'home.html')
 
 def login_view(request):
-    # Check if the user has just registered
-    if request.session.get('just_registered'):
-        logout(request)
-        # Remove the flag after logging out
-        request.session.pop('just_registered', None)
-        return redirect('login')  # Redirect them to the login page or other safe page
-
-
     if request.method == 'POST':
-        username = request.POST['username']
+        username_or_email = request.POST['username']
         password = request.POST['password']
+        
+        # Check if the input is an email
+        if '@' in username_or_email:
+            try:
+                user = User.objects.get(email=username_or_email)
+                username = user.username
+            except User.DoesNotExist:
+                username = None
+        else:
+            username = username_or_email
+        
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
-            return redirect(reverse('geolocator'))
+            # Redirect to Spotify auth after successful login
+            scope = 'user-top-read'
+            auth_url = (
+                "https://accounts.spotify.com/authorize"
+                "?response_type=code"
+                f"&client_id={settings.SPOTIFY_CLIENT_ID}"
+                f"&redirect_uri={settings.SPOTIFY_REDIRECT_URI}"
+                f"&scope={scope}"
+            )
+            return redirect(auth_url)
         else:
             error_message = "Incorrect username or password."
             return render(request, 'login.html', {'error_message': error_message})    
     return render(request, 'login.html')
 
 def logout_view(request):
+    # Clear Spotify token when logging out
+    if 'spotify_token' in request.session:
+        del request.session['spotify_token']
     logout(request)
-    return redirect('/auth/login/')
+    return redirect('login')
 
 def register_view(request):
-    if request.session.get('just_registered'):
-        logout(request)
-        request.session.pop('just_registered', None)
-        return redirect('login')
-
     if request.method == 'POST':
         username = request.POST['username']
         email = request.POST['email']
@@ -57,36 +70,36 @@ def register_view(request):
         security_answer = request.POST['security_answer']
         error_message = None
 
-        if User.objects.filter(username=username).exists():
-            error_message = 'Username already exists. Please choose another one.'
-        elif Profile.objects.filter(email=email).exists():
-            error_message = 'Email already exists. Please choose another one.'
-        elif password != confirm_password:
-            error_message = 'Passwords do not match.'
-        elif not security_question or not security_answer:
-            error_message = 'Please provide a security question and answer.'
-
+        # Validation checks...
         if error_message:
             return render(request, 'register.html', {'error_message': error_message})
 
         try:
-            user = User.objects.create_user(username=username, password=password)
-            user.save()
-            # Profile creation will be handled by the signal
-            profile = Profile.objects.get(user=user)
-            profile.email = email
-            profile.security_question = security_question
-            profile.security_answer = security_answer
-            profile.save()
-            request.session['just_registered'] = True
-            return redirect('login_user', username=username)
-        except IntegrityError as e:
-            error_message = f'IntegrityError: {e}'
-            print(error_message)
-            return render(request, 'register.html', {'error_message': error_message})
+            from django.db import transaction
+            with transaction.atomic():
+                user = User.objects.create_user(username=username, password=password)
+                profile = Profile.objects.create(
+                    user=user,
+                    email=email,
+                    security_question=security_question,
+                    security_answer=security_answer
+                )
+                login(request, user)
+                
+                # Redirect to Spotify auth after registration
+                scope = 'user-top-read'
+                auth_url = (
+                    "https://accounts.spotify.com/authorize"
+                    "?response_type=code"
+                    f"&client_id={settings.SPOTIFY_CLIENT_ID}"
+                    f"&redirect_uri={settings.SPOTIFY_REDIRECT_URI}"
+                    f"&scope={scope}"
+                )
+                return redirect(auth_url)
         except Exception as e:
-            error_message = f'Exception: {e}'
-            print(error_message)
+            if User.objects.filter(username=username).exists():
+                User.objects.get(username=username).delete()
+            error_message = f'An error occurred during registration: {str(e)}'
             return render(request, 'register.html', {'error_message': error_message})
 
     return render(request, 'register.html')
@@ -94,13 +107,12 @@ def register_view(request):
 def login_user(request, username):
     user = User.objects.get(username=username)
     login(request, user)  # Log the user in
-    return redirect(reverse('geolocator'))
+    return redirect('home')  # Change this to redirect to home page
 
 def request_username_view(request):
     # Check if the user has just registered
     if request.session.get('just_registered'):
         # Log out the user
-        logout(request)
         # Remove the flag after logging out
         request.session.pop('just_registered', None)
         return redirect('login')  # Redirect them to the login page or other safe page
