@@ -30,7 +30,7 @@ DEBUG = True
 USE_I18N = True
 
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['spotify-wrapped-app.onrender.com', 'localhost', '127.0.0.1']
 
 
 # Application definition

@@ -2,20 +2,40 @@
 
 # This is the service configuration for the web app
 services:
-  - name: Spotify-Wrapped  #The name of the service on Render
-    type: web # Defines this service as a web service
-    env: python # Specifies the environment as Python
-    buildCommand: "pip install -r requirements.txt" # Command to install dependencies
-    startCommand: "gunicorn Spotify-Wrapped.wsgi:application" # Command to install dependencies
-    plan: free # The database plan to use (e.g., free, shared, standard)
-    autoDeploy: true # Whether to automatically build the application by running the build commands defined
+  - type: web
+    name: spotify-wrapped-app
+    env: python
     envVars:
-      - key: SECRET_KEY
-        sync: false
-      - key: DJANGO_SETTINGS_MODULE
-        value: "Spotify-Wrapped.settings"
-databases:
-  - name: spotify-wrapped-db  # Name of the database
-    plan: free  # The database plan to use (e.g., free, shared, standard)
-    region: ohio # The region for the database instance
-    autoMigrate: true  # Whether to enable automatic migrations
+      # Add your Spotify API credentials here
+      - key: SPOTIFY_CLIENT_ID
+        value: "048c0c15f561459285490bc7f435274a"
+      - key: SPOTIFY_CLIENT_SECRET
+        value: "1c6c33efc7754a81b36618afb6c4eff0"
+      # Other environment variables like Django settings can go here
+      - key: DJANGO_SECRET_KEY
+        value: "django-insecure-)5)iwq7nw2tj)=#@4feyaau%-o_x-xvgqukvt$$szl091d==ty"  # Change to your actual Django secret key
+      - key: DJANGO_DEBUG
+        value: "True"
+      - key: DJANGO_ALLOWED_HOSTS
+        value: "spotify-wrapped-app.onrender.com,localhost,127.0.0.1"
+
+    # Command to install dependencies (typically your requirements.txt)
+    buildCommand: |
+      pip install -r requirements.txt
+
+    # Command to start the Django app using Gunicorn
+    startCommand: |
+      gunicorn spotify_wrapped.wsgi:application --bind 0.0.0.0:$PORT
+
+    # Define the directory for the SQLite database (optional)
+    mount:
+      - source: /mnt/data
+        destination: /db.sqlite3  # Ensure that your SQLite DB is stored persistently
+
+    # Optional, for static files (if you're using static assets)
+    static:
+      - source: /static
+        destination: /wrappedSlides/static
+
+    # Ensure your Django app is set up correctly for production (for example, using WhiteNoise for static files)
+    # Additional services like a database are not needed for SQLite (it is a file-based DB)
