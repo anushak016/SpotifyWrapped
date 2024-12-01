@@ -1,20 +1,48 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Error</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             text-align: center;
             margin-top: 50px;
+            color: #333;
         }
         h1 {
-            color: red;
+            color: #d9534f; /* Bootstrap danger red */
+            font-size: 2.5em;
+        }
+        p {
+            font-size: 1.2em;
+            margin: 20px auto;
+        }
+        a {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 1em;
+            color: #fff;
+            background-color: #007bff; /* Bootstrap primary blue */
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.2s ease;
+        }
+        a:hover {
+            background-color: #0056b3;
+        }
+        .error-icon {
+            font-size: 5em;
+            color: #d9534f;
+            margin-bottom: 20px;
         }
     </style>
 </head>
 <body>
-    <h1>Error</h1>
+    <div class="error-icon">❌</div>
+    <h1>An Error Occurred</h1>
     <p>{{ message }}</p>
     <a href="{% url 'spotify_login' %}">Try Again</a>
 </body>
