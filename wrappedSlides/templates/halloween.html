@@ -1,0 +1,114 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Spooky Wrapped</title>
+    <link rel="stylesheet" href="{% static 'halloween.css' %}">
+</head>
+<body>
+    <div id="slide-show">
+        {% for slide in slides %}
+            <div class="slide{% if forloop.first %} active{% endif %}">
+                <h2>{{ slide.title }}</h2>
+
+                {% if slide.type == "profile" %}
+                    <div class="profile">
+                        {% if slide.content.images and slide.content.images.0.url %}
+                            <img src="{{ slide.content.images.0.url }}" alt="Profile Picture">
+                        {% endif %}
+                        <div>
+                            <h3>{{ slide.content.display_name }}</h3>
+                            <p>Followers: {{ slide.content.followers.total }}</p>
+                        </div>
+                    </div>
+
+                {% elif slide.type == "song_transition" %}
+                    <h3>There's over 100 million songs on Spotify. 
+                        Are you ready to find out which ones you liked the most?</h3>
+
+                {% elif slide.type == "top_tracks" %}
+                    <h3>You listened to a lot of songs...but these were on repeat!</h3>
+                    <ul class="item-list">
+                        {% for track in slide.content %}
+                            <li class="track">
+                                {% if track.album.images %}
+                                    <img src="{{ track.album.images.0.url }}" alt="Album Cover">
+                                {% endif %}
+                                <div class="track-info">
+                                    <p class="item-title">{{ track.name }}</p>
+                                    <p>by {% for artist in track.artists %}{{ artist.name }}{% if not forloop.last %}, {% endif %}{% endfor %}</p>
+                                    <p>Album: {{ track.album.name }}</p>
+                                </div>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                
+                {% elif slide.type == "top_artists" %}
+                    <h3>Some artists really caught your eye. These are your top 5.</h3>
+                    <ul class="item-list">
+                        {% for artist in slide.content %}
+                            <li class="artist">
+                                {% if artist.images %}
+                                    <img src="{{ artist.images.0.url }}" alt="Artist Image">
+                                {% endif %}
+                                <div class="artist-info">
+                                    <p class="item-title">{{ artist.name }}</p>
+                                    <p>Genres: {{ artist.genres|join:", " }}</p>
+                                    <p>Followers: {{ artist.followers.total }}</p>
+                                </div>
+                            </li>
+                        {% endfor %}
+                    </ul>
+
+                {% elif slide.type == "song_playback" %}
+                    <h3>Take a trip down memory lane and revisit those songs you love.</h3>
+                        <div id="spotify-player">
+                        <div id="spotify-player-container"></div>
+                        <button id="play-top-songs">Play Top 3 Songs</button>
+                    </div>
+
+                {% elif slide.type == "playlists" %}
+                    <h3>You curated some nice playlists! Here are some of your faves.</h3>
+                    <ul class="item-list">
+                        {% for playlist in slide.content %}
+                            <li class="playlist">
+                                {% if playlist.images %}
+                                    <img src="{{ playlist.images.0.url }}" alt="Playlist Image">
+                                {% endif %}
+                                <div>
+                                    <p class="item-title">{{ playlist.name }}</p>
+                                    <p>Tracks: {{ playlist.tracks.total }}</p>
+                                </div>
+                            </li>
+                        {% endfor %}
+                    </ul>
+
+                {% elif slide.type == "top_genres" %}
+                    <h3>You really explored all the genres, let's take a look!</h3>
+                        <ul class = "top-genres">
+                            {% for genre in slide.content %}
+                                <li class="genre">
+                                    <span class="genre-name" style="font-size: {{ genre.count|add:10 }}px;">{{ genre.genre }}</span>
+                                    <span class="genre-count">({{ genre.count }} artists)</span>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                
+                {% elif slide.type == "end" %}
+                    <h3>You made it to the end, {{ slide.content.display_name }}.
+                    Keep up the good work and keep listening on.</h3>
+                {% endif %}
+            </div>
+        {% endfor %}
+    </div>
+
+    <!-- Navigation buttons -->
+    <button id="previous">Previous</button>
+    <button id="next">Next</button>
+
+    <script src="{% static 'script.js' %}"></script>
+</body>
+</html>
+
