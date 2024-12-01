@@ -3,40 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Timeline Game</title>
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
+            font-family: "Helvetica Neue", Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: white;
+            color: black;
+            text-align: center;
         }
         h1 {
-            text-align: center;
+            margin-top: 20px;
+            color: #1db954;
         }
         p {
-            text-align: center;
+            margin-bottom: 20px;
         }
         .song-list {
             list-style: none;
             padding: 0;
             margin: 20px auto;
             width: 50%;
+            text-align: left;
+            position: relative;
         }
         .song {
             padding: 10px;
             margin: 5px 0;
-            background-color: #f0f0f0;
+            background-color: #333;
             border-radius: 5px;
-            cursor: move;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            transition: background-color 0.2s ease;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(136, 133, 133, 0.1);
+            transition: transform 1.5s ease, background-color 1.5s ease;
+        }
+        .song strong {
+            color: #1db954;
+        }
+        .song span {
+            color: #fff;
         }
         .song:hover {
-            background-color: #e0e0e0;
-        }
-        .sortable-ghost {
-            background-color: #007bff !important;
-            color: #fff !important;
+            background-color: #444;
         }
         button {
             display: block;
@@ -44,13 +52,13 @@
             padding: 10px 20px;
             font-size: 16px;
             color: #fff;
-            background-color: #007bff;
+            background-color: #1db954;
             border: none;
             border-radius: 5px;
             cursor: pointer;
         }
         button:hover {
-            background-color: #0056b3;
+            background-color: #1aa34a;
         }
         @media (max-width: 768px) {
             .song-list {
@@ -58,10 +66,12 @@
             }
         }
     </style>
+    <title>here's your top 10 songs</title>
 </head>
 <body>
-    <h1>Timeline Game</h1>
-    <p>Drag and drop the songs to arrange them in the correct order!</p>
+    <h1>here's your top 10 songs</h1>
+    <h3>can you order them from most to least listened to?</h3>
+    <p>i'm sure you know what you listen to most...(unfortunately, now i do too)</p>
 
     <!-- Form for submitting the timeline -->
     <form id="timeline-form" method="POST" action="{% url 'submit_timeline' %}">
@@ -69,31 +79,37 @@
         <ul id="song-list" class="song-list">
             {% for song in tracks %}
                 <li class="song" data-id="{{ song.id }}">
-                    <strong>{{ song.title }}</strong> by {{ song.artist }}
+                    <strong>{{ song.title }}</strong> <span>by {{ song.artist }}</span>
                 </li>
             {% endfor %}
         </ul>
         <input type="hidden" name="track_order" id="song-order">
-        <button type="submit">Submit</button>
+        <button type="submit">submit</button>
     </form>
+
+    <button id="show-correct-button">show correct answers</button>
 
     <script>
         // Enable drag-and-drop functionality
         const sortable = new Sortable(document.getElementById('song-list'), {
             animation: 150,
             onEnd: () => {
-                // Capture the updated song order
                 const order = Array.from(document.querySelectorAll('.song')).map(song => song.dataset.id);
                 document.getElementById('song-order').value = JSON.stringify(order);
             }
         });
 
-        // Handle form submission with AJAX
+        // Form submission with AJAX
         document.getElementById('timeline-form').addEventListener('submit', function (event) {
             event.preventDefault();
 
-            const songOrder = document.getElementById('song-order').value; // JSON string of song order
-            const csrfToken = document.querySelector('input[name=csrfmiddlewaretoken]').value; // CSRF token
+            const songOrder = document.getElementById('song-order').value;
+            if (!songOrder || songOrder === "[]") {
+                alert("please at least try first...");
+                return;
+            }
+
+            const csrfToken = document.querySelector('input[name=csrfmiddlewaretoken]').value;
 
             fetch(this.action, {
                 method: 'POST',
@@ -101,67 +117,65 @@
                     'Content-Type': 'application/json',
                     'X-CSRFToken': csrfToken
                 },
-                body: JSON.stringify({ track_order: JSON.parse(songOrder) }) // Parse and send the song order
+                body: JSON.stringify({ track_order: JSON.parse(songOrder) })
             })
             .then(response => response.json())
             .then(data => {
                 if (data.error) {
-                    alert(`Error: ${data.error}`);
+                    alert(`error: ${data.error}`);
                 } else {
-                    // Display the score
-                    alert(`You scored ${data.score}/${data.total}!`);
+                    let responseMessage;
 
-                    // Show the correct order
-                    const correctOrderList = document.createElement('ul');
-                    correctOrderList.style.marginTop = '20px';
-                    correctOrderList.style.listStyle = 'none';
-                    correctOrderList.style.padding = '0';
-                    correctOrderList.style.textAlign = 'center';
-
-                    data.correct_order.forEach(trackId => {
-                        const track = [...document.querySelectorAll('.song')].find(song => song.dataset.id === trackId);
-                        if (track) {
-                            const listItem = document.createElement('li');
-                            listItem.innerText = track.textContent;
-                            listItem.style.padding = '10px';
-                            listItem.style.backgroundColor = '#d4edda';
-                            listItem.style.margin = '5px 0';
-                            listItem.style.borderRadius = '5px';
-
-                            correctOrderList.appendChild(listItem);
+                    if (data.score >= 1 && data.score <= 3) {
+                        responseMessage = `did you bump your head recently? you only got ${data.score} right.`;
+                        alert(responseMessage);
+                    } else if (data.score >= 4 && data.score <= 6) {
+                        responseMessage = `pretty mid, you got ${data.score} right.`;
+                        alert(responseMessage);
+                    } else if (data.score >= 7 && data.score <= 9) {
+                        responseMessage = `yay!!! you really do know yourself, you got ${data.score} right.`;
+                        alert(responseMessage);
+                    } else if (data.score === 10) {
+                        // Avoid duplicate messages
+                        if (confirm("10/10 by the 10/10! now, want to take a shot at the popularity challenge?")) {
+                            window.location.href = "{% url 'popularity_challenge' %}";
+                        } else {
+                            alert("aww, maybe next time!");
                         }
-                    });
+                        return; // Prevent further message logic
+                    } else {
+                        responseMessage = `something seems off...you got ${data.score} right.`;
+                        alert(responseMessage);
+                    }
 
-                    const feedback = document.createElement('p');
-                    feedback.innerText = "Here is the correct order!";
-                    feedback.style.textAlign = 'center';
-                    feedback.style.fontWeight = 'bold';
-                    feedback.style.marginTop = '20px';
-
-                    document.body.appendChild(feedback);
-                    document.body.appendChild(correctOrderList);
-
-                    // Add a replay button
-                    const replayButton = document.createElement('button');
-                    replayButton.innerText = 'Play Again';
-                    replayButton.style.display = 'block';
-                    replayButton.style.margin = '20px auto';
-                    replayButton.style.padding = '10px 20px';
-                    replayButton.style.fontSize = '16px';
-                    replayButton.style.color = '#fff';
-                    replayButton.style.backgroundColor = '#28a745';
-                    replayButton.style.border = 'none';
-                    replayButton.style.borderRadius = '5px';
-                    replayButton.style.cursor = 'pointer';
-
-                    replayButton.onclick = () => window.location.reload();
-                    document.body.appendChild(replayButton);
+                    // Save correct order in session for later use
+                    sessionStorage.setItem("correctOrder", JSON.stringify(data.correct_order));
                 }
             })
             .catch(error => {
-                console.error('Error:', error);
-                alert('Something went wrong. Please try again.');
+                console.error('error:', error);
+                alert('something went wrong! please try again, if you dare!');
             });
+        });
+
+        // Show Correct Answers
+        document.getElementById('show-correct-button').addEventListener('click', () => {
+            const correctOrder = JSON.parse(sessionStorage.getItem("correctOrder"));
+
+            if (correctOrder && correctOrder.length > 0) {
+                const songList = document.getElementById('song-list');
+                const songs = Array.from(songList.children);
+
+                correctOrder.forEach(trackId => {
+                    const trackElement = songs.find(song => song.dataset.id === trackId);
+                    if (trackElement) {
+                        songList.appendChild(trackElement);
+                    }
+                });
+                alert('as you wish! (i really do know you better than yourself)');
+            } else {
+                alert("please at least try first...");
+            }
         });
     </script>
 </body>
