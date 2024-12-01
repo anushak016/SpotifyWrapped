@@ -109,7 +109,7 @@ def wrapped(request, time_range, theme):
         profile_url = "https://api.spotify.com/v1/me"
         profile_data = fetch_spotify_data(profile_url, headers)
 
-        top_tracks_url = f"https://api.spotify.com/v1/me/top/tracks?time_range={time_range}&limit=5"
+        top_tracks_url = f"https://api.spotify.com/v1/me/top/tracks?time_range={time_range}&limit=10"
         top_tracks_response = requests.get(top_tracks_url, headers=headers)
         top_tracks_data = top_tracks_response.json().get("items", []) if top_tracks_response.status_code == 200 else []
 
@@ -132,7 +132,7 @@ def wrapped(request, time_range, theme):
         {"type": "profile", "title": "Welcome to Your Wrapped!", "content": profile_data},
         {"type": "song_transitions", "title": "Keep Clicking to Find Out Your Biggest Secrets :)", },
         {"type": "top_tracks", "title": "Top Tracks", "content": top_tracks_data},
-        {"type": "song_playback:", "title": "Listen Back To Your Favorites", "content": top_tracks_data, "token": access_token, },
+        {"type": "song_playback", "title": "Listen Back To Your Favorites", "content": top_tracks_data, "token": access_token, },
         {"type": "top_artists", "title": "Top Artists", "content": top_artists_data},
         {"type": "playlists", "title": "Playlists", "content": playlists_data,},
         {"type": "top_genres", "title": "Top Genres", "content": [{"genre": genre, "count": count} for genre, count in top_genres]},

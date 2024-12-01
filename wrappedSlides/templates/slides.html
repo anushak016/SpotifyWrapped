@@ -7,7 +7,73 @@
     <title>Your Wrapped</title>
     <link rel="stylesheet" href="{% static 'styles.css' %}">
     <script src="https://sdk.scdn.co/spotify-player.js"></script>
+    <script>
+        window.onSpotifyWebPlaybackSDKReady = () => {
+          const token = request.session.get("access_token")
+          const player = new Spotify.Player({
+            name: 'Web Playback SDK Quick Start Player',
+            getOAuthToken: cb => { cb(token); },
+            volume: 0.5
+          });
 
+          player.addListener('ready', ({ device_id }) => {
+                console.log('Ready with Device ID', device_id);
+            });
+
+            // Not Ready
+          player.addListener('not_ready', ({ device_id }) => {
+                console.log('Device ID has gone offline', device_id);
+            });
+        
+          document.getElementById('togglePlay').onclick = function() {
+              player.togglePlay();
+            };
+
+          player.connect().then(success => {
+            if (success) {
+              console.log('The Web Playback SDK successfully connected to Spotify!');
+            }
+          });
+
+          // Play a specific track when clicked
+    document.querySelectorAll('.track').forEach(trackElement => {
+      trackElement.addEventListener('click', function () {
+        const trackUri = this.getAttribute('data-uri');
+        currentTrackUri = trackUri;
+
+        player._options.getOAuthToken(token => {
+          fetch(`https://api.spotify.com/v1/me/player/play`, {
+            method: 'PUT',
+            headers: {
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ uris: [trackUri] })
+          }).then(() => {
+            const trackTitle = this.querySelector('.item-title').innerText;
+            const trackArtist = this.querySelector('.track-info p:nth-child(2)').innerText;
+            document.getElementById('track-title').innerText = trackTitle;
+            document.getElementById('track-artist').innerText = trackArtist;
+          });
+        });
+      });
+    });
+
+    // Play/Pause toggle
+    document.getElementById('playPause').addEventListener('click', () => {
+      player.togglePlay();
+    });
+
+    // Next and Previous (you can customize logic for playlist handling)
+    document.getElementById('nextTrack').addEventListener('click', () => {
+      player.nextTrack();
+    });
+
+    document.getElementById('prevTrack').addEventListener('click', () => {
+      player.previousTrack();
+    });
+        };
+      </script>
 </head>
 <body>
     <div id="slide-show">
@@ -65,19 +131,32 @@
                     </ul>
 
                 {% elif slide.type == "song_playback" %}
-                    <h3>Take a trip down memory lane and revisit those songs you love.</h3>
-                    <div id="spotify-player">
-                        <div id="spotify-player-container"></div>
-                        <button id="play-top-songs">Play Top 3 Songs</button>
+                <h3>Take a trip down memory lane and revisit those songs you love.</h3>
+                <div id="player" style="position: fixed; bottom: 0; left: 0; width: 100%; background: #222; color: white; padding: 10px; display: flex; align-items: center; justify-content: space-between;">
+                    <div id="current-track-info">
+                        <p id="track-title">No song playing</p>
+                        <p id="track-artist"></p>
                     </div>
-                <script>
-                    // Ensure this block is only included once
-                    const topTracks = [
-                    {% for track in slide.content|slice:":3" %}
-                    "{{ track.uri }}"{% if not forloop.last %}, {% endif %}
+                    <div>
+                        <button id="prevTrack">Previous</button>
+                        <button id="playPause">Play/Pause</button>
+                        <button id="nextTrack">Next</button>
+                    </div>
+                </div>
+                <ul class="item-list">
+                    {% for track in slide.content %}
+                      <li class="track" data-uri="{{ track.uri }}">
+                        {% if track.album.images %}
+                          <img src="{{ track.album.images.0.url }}" alt="Album Cover">
+                        {% endif %}
+                        <div class="track-info">
+                          <p class="item-title">{{ track.name }}</p>
+                          <p>by {% for artist in track.artists %}{{ artist.name }}{% if not forloop.last %}, {% endif %}{% endfor %}</p>
+                          <p>Album: {{ track.album.name }}</p>
+                        </div>
+                      </li>
                     {% endfor %}
-                    ];
-                </script>
+                  </ul>
 
                 {% elif slide.type == "playlists" %}
                     <h3>You curated some nice playlists! Here are some of your faves.</h3>
