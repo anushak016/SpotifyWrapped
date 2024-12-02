@@ -7,9 +7,191 @@
     <title>Your Wrapped</title>
     <link rel="stylesheet" href="{% static 'styles.css' %}">
     <script src="https://sdk.scdn.co/spotify-player.js"></script>
+    <style>
+        /* Base styles */
+        body {
+            background: linear-gradient(135deg, #E8F5E9, #F1F8E9); /* Light green gradients */
+            color: #2E7D32; /* Dark green for main text */
+            transition: background 0.3s ease; /* Add transition for background */
+        }
 
+        /* Simplified dark mode - only changes background */
+        .dark-mode {
+            background: linear-gradient(135deg, #1A1A1A, #212121); /* Dark gradient */
+            transition: background 0.3s ease; /* Add transition for background */
+        }
+
+        h2, h3 {
+            color: #1DB954; /* Spotify green */
+            text-shadow: 2px 2px #66BB6A;
+            transition: color 0.3s ease, text-shadow 0.3s ease; /* Add transition for text */
+        }
+
+        h3 {
+            font-size: 2rem;
+            color: #43A047; /* Lighter forest green - changed from #2E7D32 */
+            transition: color 0.3s ease; /* Add transition for text */
+        }
+
+        .profile h3 {
+            color: #1DB954; /* Spotify green */
+        }
+
+        .profile p {
+            color: #388E3C; /* Dark green */
+        }
+
+        .item-list li {
+            background: linear-gradient(135deg, #81C784, #A5D6A7); /* Light green gradients */
+        }
+
+        .item-list li img {
+            border: 3px solid #1DB954; /* Spotify green border */
+            box-shadow: 0 4px 10px rgba(29, 185, 84, 0.5); /* Spotify green shadow */
+        }
+
+        .item-title {
+            color: #1B5E20; /* Very dark green */
+        }
+
+        button {
+            background: linear-gradient(135deg, #1DB954, #4CAF50);
+            color: white;
+        }
+
+        button:hover {
+            background: linear-gradient(135deg, #2E7D32, #81C784); /* Forest green to light green */
+        }
+
+        .genre {
+            background: linear-gradient(45deg, #1DB954, #66BB6A);
+            color: white;
+        }
+
+        /* Add these styles */
+        .theme-selector-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+
+        #theme-selector {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: white;
+            border: none;
+            padding: 8px 12px;
+            font-size: 14px;
+            border-radius: 20px;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            outline: none;
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24'%3E%3Cpath fill='%23333' d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            padding-right: 30px;
+            text-align: center;
+        }
+
+        #theme-selector:hover {
+            background-color: #f5f5f5;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Add transition to all elements that might change between modes */
+        .item-list li, button, .genre {
+            transition: background 0.3s ease, color 0.3s ease, transform 0.2s ease;
+        }
+
+        /* Holiday mode styles */
+        .christmas-mode body {
+            background: linear-gradient(135deg, #034f1d, #137a38); /* Christmas green gradient */
+        }
+
+        .christmas-mode h2, 
+        .christmas-mode h3 {
+            color: #034f1d; /* Christmas green */
+            text-shadow: 2px 2px #137a38; /* Darker green shadow */
+        }
+
+        .christmas-mode .item-list li {
+            background: linear-gradient(135deg, #C41E3A, #8B0000); /* Christmas red gradient */
+        }
+
+        .christmas-mode button {
+            background: linear-gradient(135deg, #C41E3A, #8B0000); /* Christmas red gradient */
+            color: white;
+        }
+
+        .christmas-mode button:hover {
+            background: linear-gradient(135deg, #8B0000, #5C0000); /* Darker red gradient */
+        }
+
+        .christmas-mode .item-title,
+        .christmas-mode .profile p,
+        .christmas-mode .track-info p,
+        .christmas-mode .artist-info p,
+        .christmas-mode .genre,
+        .christmas-mode .playlist p {  /* Add this line */
+            color: white;
+        }
+
+        .christmas-mode .genre {
+            background: linear-gradient(135deg, #C41E3A, #8B0000); /* Christmas red gradient */
+        }
+
+        /* Add/update these playlist-specific styles */
+        .playlist {
+            display: flex;
+            flex-direction: row;
+            align-items: flex-start;
+            gap: 15px;
+            width: 100%;
+        }
+
+        .playlist div {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: flex-start;
+            gap: 5px;
+            width: 100%;
+        }
+
+        .playlist .item-title {
+            margin: 0;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .playlist p {
+            margin: 0;
+            width: 100%;
+            text-align: left;
+        }
+
+        /* Ensure consistent image sizing */
+        .playlist img {
+            width: 60px;
+            height: 60px;
+            border-radius: 10px;
+            object-fit: cover;
+            flex-shrink: 0; /* Prevent image from shrinking */
+        }
+    </style>
 </head>
-<body>
+<body {% if current_theme == 'dark' %}class="dark-mode"{% endif %}>
+    <div class="theme-selector-container">
+        <select id="theme-selector" onchange="changeTheme(this.value)">
+            <option value="light" {% if current_theme == 'light' %}selected{% endif %}>Light Mode</option>
+            <option value="dark" {% if current_theme == 'dark' %}selected{% endif %}>Dark Mode</option>
+            <option value="christmas" {% if current_theme == 'christmas' %}selected{% endif %}>Holiday Mode</option>
+        </select>
+    </div>
     <div id="slide-show">
         {% for slide in slides %}
             <div class="slide{% if forloop.first %} active{% endif %}">
@@ -22,7 +204,7 @@
                         {% endif %}
                         <div>
                             <h3>{{ slide.content.display_name }}</h3>
-                            <p>Followers: {{ slide.content.followers.total }}</p>
+                            <!-- Removed the followers line -->
                         </div>
                     </div>
 
@@ -119,6 +301,28 @@
     <button id="next">Next</button>
 
     <script src="{% static 'script.js' %}"></script>
+    <script>
+        // Apply the initial theme from home page
+        window.onload = function() {
+            const theme = "{{ current_theme }}";
+            document.getElementById("theme-selector").value = theme;
+            document.body.classList.remove('dark-mode', 'christmas-mode');
+            if (theme === "dark") {
+                document.body.classList.add('dark-mode');
+            } else if (theme === "christmas") {
+                document.body.classList.add('christmas-mode');
+            }
+        };
+
+        function changeTheme(theme) {
+            document.body.classList.remove('dark-mode', 'christmas-mode');
+            if (theme === "dark") {
+                document.body.classList.add('dark-mode');
+            } else if (theme === "christmas") {
+                document.body.classList.add('christmas-mode');
+            }
+            localStorage.setItem("wrapped_theme", theme);
+        }
+    </script>
 </body>
 </html>
-

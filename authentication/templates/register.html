@@ -1,152 +1,284 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register</title>
-    <style>
-        /* Top banner styling */
-        #top-banner {
-            background-color: #1DB954;  /* Background color for the banner */
-            color: white;  /* Text color */
-            padding: 20px;  /* Space around the content inside the banner */
-            /*text-align: left;*/
-            position: fixed;  /* Fix the banner at the top */
-            justify-content: space-between;
-            align-items: center;
-            top: 0;  /* Align it to the top of the page */
-            width: 100%;  /* Make it span the full width of the screen */
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);  /* Add some shadow for a subtle 3D effect */
-        }
+<!-- templates/register.html -->
+{% extends "base.html" %}
+{% load static %}
 
-        /* Styling for the title inside the banner */
-        #top-banner h1 {
-            margin: 0;  /* Remove default margin from the h1 */
-            margin-left: 15px;
-            text-align: left;
-            font-size: 1.5em;  /* Adjust font size */
-            font-family: 'Helvatica Neue', sans-serif;  /* Set the font */
-            color: #FFFFFF;
-        }
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: #f4f4f9;
-            color: #333;
-        }
+{% block title %}Register{% endblock %}
 
-        .container {
-            margin-top: 75px;
-            text-align: center;
-            background-color: #CCCCCC;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            padding: 40px;
-            width: 300px;
-        }
+{% block extra_styles %}
+<style>
+    /* Background styling for login/register page */
+    body {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        background-color: #f8f9fa;
+        margin: 0;
+        padding: 0;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+    }
 
-        h1 {
-            margin-bottom: 20px;
-            font-size: 24px;
-            color: #1DB954;
-        }
+    /* Container styling */
+    .custom-container {
+        flex: 1;
+        margin-top: 100px; /* Space for header */
+        margin-bottom: 50px; /* Space above footer */
+        text-align: center;
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        padding: 40px;
+        width: 100%;
+        max-width: 600px;
+        transition: background-color 0.3s;
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
 
-        label {
-            display: block;
-            margin: 10px 0 5px;
-            font-size: 14px;
-            text-align: left;
-        }
+    h1 {
+        margin-bottom: 20px;
+        font-size: 32px;
+        font-weight: 600;
+        font-family: 'Metropolis', sans-serif;
+        color: #1DB954;
+    }
 
-        input[type="text"],
-        input[type="password"] {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            margin-bottom: 15px;
-            font-size: 14px;
-        }
+    .dark-mode h1 {
+        color: #1DB954; /* Use light mode green in dark mode */
+    }
 
-        input[type="submit"] {
-            width: 100%;
-            padding: 10px;
-            background-color: #1DB954;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-            font-size: 16px;
-        }
+    .christmas-mode h1 {
+        color: #034f1d; /* Christmas green */
+        font-size: 32px; /* Match the new size */
+        font-weight: 600; /* Match the new weight */
+        font-family: 'Metropolis', sans-serif; /* Keep font family consistent */
+    }
 
-        input[type="submit"]:hover {
-            background-color: #073625;
-        }
+    .btn-custom {
+        background-color: #1DB954;
+        color: #fff;
+        transition: background-color 0.3s ease;
+        border-radius: 5px;
+        padding: 10px 20px;
+        font-size: 16px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        border: none;
+        width: 100%;
+        margin: 20px 0;
+    }
 
-        p {
-            margin-top: 10px;
-            font-size: 14px;
-        }
+    .btn-custom:hover {
+        background-color: #073625;
+    }
 
-        a {
-            color: #4a90e2;
-            text-decoration: none;
-        }
+    .footer {
+        margin-top: 20px;
+        font-size: 12px;
+        color: #777;
+    }
 
-        a:hover {
-            text-decoration: underline;
-        }
+    .error-message {
+        color: red;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
 
-        ul {
-            color: red;
-            margin-top: 10px;
-            text-align: left;
-        }
-    </style>
-</head>
-    <!-- Top Banner -->
-  <header id="top-banner">
-    <h1>Atlanta Food Finder</h1>
-  </header>
-<body>
-    <div class="container">
-        <h1>Register</h1>
-        <form method="POST" action="{% url 'register' %}">
-            {% csrf_token %}
-            <label for="username">Username:</label>
-            <input type="text" id="username" name="username" required>
+    /* Ensure footer stays at bottom */
+    footer {
+        margin-top: auto;
+        position: static;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        background-color: #1DB954;
+        padding: 20px;
+        box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+        z-index: 1000;
+    }
 
-            <label for="password">Password:</label>
-            <input type="password" id="password" name="password" required>
+    /* Form label styling */
+    .form-label {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        display: block;
+        margin-top: 10px;
+        font-size: 16px; /* Increase caption size */
+        text-align: left;
+        font-weight: 500;
+    }
 
-            <label for="confirm_password">Confirm Password:</label>
-            <input type="password" id="confirm_password" name="confirm_password" required>
+    /* Input placeholder styling */
+    .form-control::placeholder {
+        font-size: 16px; /* Match caption size */
+        font-family: 'Plus Jakarta Sans', sans-serif;
+    }
 
-            <label for="security_question">Security Question:</label>
-            <input type="text" id="security_question" name="security_question" required>
+    .password-toggle {
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        cursor: pointer;
+        user-select: none;
+        color: #666;
+    }
 
-            <label for="security_answer">Answer:</label>
-            <input type="text" id="security_answer" name="security_answer" required>
+    .password-toggle:hover {
+        color: #1DB954;
+    }
 
-            <input type="submit" value="Register">
-        </form>
+    .password-input-container {
+        position: relative;
+        width: 100%;
+    }
 
-        <p>Already have an account? <a href="{% url 'login' %}">Login here</a></p>
+    .form-control {
+        padding-right: 35px !important;
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ced4da;
+        border-radius: 5px;
+        margin-top: 5px;
+        margin-bottom: 15px;
+        font-size: 14px;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+    }
 
-        <!-- Optional: Display any error messages if present -->
-        {% if messages %}
-            <ul>
-                {% for message in messages %}
-                    <li>{{ message }}</li>
-                {% endfor %}
-            </ul>
+    /* Add to both login.html and register.html styles */
+    .form-control::-ms-reveal,
+    .form-control::-ms-clear {
+        display: none;
+    }
+
+    /* Update link styling */
+    a {
+        color: #1DB954;
+        text-decoration: none;
+    }
+
+    a:hover {
+        color: #073625;
+        text-decoration: underline;
+    }
+
+    /* Christmas mode link styling */
+    .christmas-mode a {
+        color: #c41e3a !important; /* Christmas red */
+    }
+
+    .christmas-mode a:hover {
+        color: #8b0000 !important; /* Darker Christmas red */
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+    <h1>Register New Account</h1>
+    <form method="POST" action="{% url 'register' %}">
+        {% csrf_token %}
+        {% if error_message %}
+        <div class="error-message">{{ error_message }}</div>
         {% endif %}
-    </div>
-</body>
-</html>
+
+        <div class="mb-3">
+            <label for="username" class="form-label">Username:</label>
+            <input type="text" 
+                   id="username" 
+                   name="username" 
+                   class="form-control" 
+                   placeholder="Choose a username"
+                   required>
+        </div>
+
+        <div class="mb-3">
+            <label for="email" class="form-label">Email:</label>
+            <input type="email" 
+                   id="email" 
+                   name="email" 
+                   class="form-control" 
+                   placeholder="Enter your email address"
+                   required>
+        </div>
+
+        <div class="mb-3">
+            <label for="password" class="form-label">Password:</label>
+            <div class="password-input-container">
+                <input type="password" 
+                       id="password" 
+                       name="password" 
+                       class="form-control {% if error_message %}is-invalid{% endif %}" 
+                       placeholder="Enter your password"
+                       required>
+                <span class="password-toggle" onclick="togglePassword(this)">
+                    <i class="fas fa-eye-slash"></i>
+                </span>
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label for="confirm_password" class="form-label">Confirm Password:</label>
+            <div class="password-input-container">
+                <input type="password" 
+                       id="confirm_password" 
+                       name="confirm_password" 
+                       class="form-control" 
+                       placeholder="Confirm your password"
+                       required>
+                <span class="password-toggle" onclick="togglePassword(this)">
+                    <i class="fas fa-eye-slash"></i>
+                </span>
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label for="security_question" class="form-label">Security Question:</label>
+            <input type="text" 
+                   id="security_question" 
+                   name="security_question" 
+                   class="form-control" 
+                   placeholder="Enter a security question"
+                   required>
+        </div>
+
+        <div class="mb-3">
+            <label for="security_answer" class="form-label">Answer:</label>
+            <input type="text" 
+                   id="security_answer" 
+                   name="security_answer" 
+                   class="form-control" 
+                   placeholder="Enter your answer"
+                   required>
+        </div>
+
+        <button type="submit" class="btn btn-custom w-100 mb-3">Register</button>
+    </form>
+
+    <p>Already have an account? <a href="{% url 'login' %}">Login here</a></p>
+
+    {% if messages %}
+        <ul>
+            {% for message in messages %}
+                <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+function togglePassword(element) {
+    const passwordInput = element.previousElementSibling;
+    const icon = element.querySelector('i');
+    
+    if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        icon.classList.remove('fa-eye-slash');
+        icon.classList.add('fa-eye');
+    } else {
+        passwordInput.type = 'password';
+        icon.classList.remove('fa-eye');
+        icon.classList.add('fa-eye-slash');
+    }
+}
+</script>
+{% endblock %}

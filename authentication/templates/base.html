@@ -1,0 +1,861 @@
+<!-- templates/base.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}My Website{% endblock %}</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Metropolis:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <style>
+        /* Top banner styling */
+        #top-banner {
+            background-color: #1DB954;
+            color: white;
+            padding: 20px;
+            position: fixed;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            top: 0;
+            width: 100%;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            height: 70px;
+            box-sizing: border-box;
+        }
+
+        #top-banner h1 {
+            margin: 0;
+            margin-left: 15px;
+            font-size: 1.5em;
+            font-family: 'Metropolis', sans-serif;
+            font-weight: 700; /* Make Wrapped logo bold */
+            color: white;
+            transition: color 0.3s ease;
+        }
+
+        #top-banner a {
+            color: white;
+            text-decoration: none;
+        }
+
+        #top-banner a:hover {
+            opacity: 0.8;
+        }
+
+        .top-banner-buttons a {
+            color: white;
+            font-family: 'Metropolis', sans-serif; /* Change to Metropolis */
+            background-color: #1DB954;
+            transition: background-color 0.3s ease;
+            border-radius: 5px;
+            padding: 10px 20px;
+            font-size: 16px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            margin-left: 10px;
+        }
+
+        .top-banner-buttons a:hover {
+            background-color: #073625;
+        }
+
+        /* Remove or modify this section */
+        .dark-mode #top-banner h1,
+        .dark-mode #top-banner h1 a,
+        .dark-mode #top-banner h1 * {
+            color: white !important; /* Changed from black to white */
+        }
+
+        /* Hover effects */
+        #top-banner h1 a:hover {
+            opacity: 0.8;
+        }
+
+        /* Dark and Light Mode Styling */
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            color: #333;
+            transition: background-color 0.3s, color 0.3s;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .dark-mode {
+            background-color: #121212;
+            color: #fff;
+        }
+
+        /* Custom Container styling */
+        .custom-container {
+            flex: 1;
+            margin-top: 100px; /* Space for fixed top banner */
+            text-align: center;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            width: 100%;
+            max-width: 600px; /* Increased width for wider forms */
+            transition: background-color 0.3s;
+            box-sizing: border-box; /* Include padding and border in width calculation */
+            margin: auto;
+            margin-bottom: 50px; /* Space above footer */
+            flex: 1; /* Allow container to grow */
+        }
+
+        .dark-mode .custom-container {
+            background-color: #333;
+        }
+
+        h1, h2, h3 {
+            font-family: 'Metropolis', sans-serif;
+            margin-bottom: 20px;
+            color: #1DB954;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+            font-size: 32px; /* Change from 36px to 32px */
+            font-weight: 600;
+            font-family: 'Metropolis', sans-serif;
+            color: #1DB954;
+        }
+
+        .dark-mode h1 {
+            color: #1DB954; /* Keep green in dark mode */
+        }
+
+        .christmas-mode h1 {
+            color: #034f1d;  /* Match light/dark mode color */
+            margin-bottom: 20px;
+            font-size: 32px;
+            font-weight: 600;
+            font-family: 'Metropolis', sans-serif;
+        }
+
+        /* Button styling */
+        .btn-custom {
+            font-family: 'Metropolis', sans-serif;
+            background-color: #1DB954;
+            color: #fff;
+            transition: background-color 0.3s ease;
+            border-radius: 5px;
+            padding: 10px 20px;
+            font-size: 16px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            margin-left: 10px;
+        }
+
+        .btn-custom:hover {
+            background-color: #073625;
+        }
+
+        /* Dropdown Styling */
+        #theme-selector {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: white;
+            border: none;
+            padding: 8px 12px;
+            font-size: 14px;
+            border-radius: 20px;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            outline: none;
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24'%3E%3Cpath fill='%23333' d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            padding-right: 30px;
+            text-align: center;
+            width: fit-content; /* Make width fit the content */
+            min-width: 120px; /* Minimum width */
+            max-width: none; /* Remove max-width constraint */
+        }
+
+        #theme-selector option {
+            text-align: center;
+            padding: 8px;
+            width: 100%;
+        }
+
+        #theme-selector:hover {
+            background-color: #f5f5f5;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .dark-mode #theme-selector {
+            background-color: #333;
+            color: white;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24'%3E%3Cpath fill='%23fff' d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+        }
+
+        .dark-mode #theme-selector:hover {
+            background-color: #444;
+        }
+
+        /* Light mode input styling */
+        .form-control {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #fff;
+            color: #333;
+            border: 1px solid #ced4da;
+            transition: all 0.3s ease;
+            padding-right: 35px; /* Make room for the eye icon */
+        }
+
+        .form-control:focus {
+            border-color: #1DB954;
+            box-shadow: 0 0 0 0.2rem rgba(29, 185, 84, 0.25);
+        }
+
+        .form-control::placeholder {
+            color: #999;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 16px;
+        }
+
+        /* Dark mode input styling */
+        .dark-mode .form-control {
+            background-color: #2a2a2a;  /* Slightly lighter than container */
+            color: #fff;
+            border: 1px solid #444;
+        }
+
+        /* Dark mode focus state */
+        .dark-mode .form-control:focus {
+            background-color: #3a3a3a;  /* Even lighter when focused */
+            color: #fff;
+            border-color: #1DB954;
+            box-shadow: 0 0 0 0.2rem rgba(29, 185, 84, 0.25);
+        }
+
+        /* Dark mode placeholder */
+        .dark-mode .form-control::placeholder {
+            color: #bbb;  /* Lighter gray for better contrast */
+        }
+
+        /* Christmas theme styling */
+        .christmas-mode {
+            background-color: #034f1d;
+            color: #fff;
+        }
+
+        .christmas-mode #top-banner {
+            background-color: #c41e3a;
+            color: #fff;
+            border: none; /* Remove any border that might affect sizing */
+        }
+
+        .christmas-mode #top-banner h1 a {
+            color: #fff;
+        }
+
+        .christmas-mode .custom-container {
+            background-color: #fff;
+            color: #034f1d;
+        }
+
+        .christmas-mode .btn-custom {
+            background-color: #c41e3a;
+            color: #fff;
+        }
+
+        .christmas-mode .btn-custom:hover {
+            background-color: #8b0000;
+        }
+
+        .christmas-mode .form-control {
+            background-color: #fff;
+            color: #034f1d;
+            border: 2px solid #c41e3a;
+        }
+
+        .christmas-mode #theme-selector {
+            background-color: #fff;
+            color: #034f1d;
+            border: 2px solid #c41e3a;
+        }
+
+        .christmas-mode #theme-selector:hover {
+            background-color: #f8f9fa;
+        }
+
+        /* .christmas-mode h1 {
+            color: #034f1d;
+            font-size: 36px;
+            font-weight: 600;
+            font-family: 'Metropolis', sans-serif;
+        } */
+
+        /* Update banner text colors for Christmas mode */
+        .christmas-mode #top-banner h1,
+        .christmas-mode #top-banner h1 a {
+            color: white !important;
+        }
+
+        .christmas-mode .top-banner-buttons a {
+            color: white !important;
+        }
+
+        .christmas-mode .btn-custom {
+            color: white !important;
+        }
+
+        /* Update footer styling */
+        footer {
+            width: 100%;
+            padding: 20px;
+            background-color: #1DB954 !important; /* Your footer background color */
+            text-align: center;
+            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+            color: white;
+            position: static; /* Ensure the footer is not fixed */
+            bottom: auto;     /* Reset bottom position */
+        }
+
+        .dark-mode footer {
+            background-color: #1DB954 !important; /* Match banner in dark mode */
+            color: white;
+        }
+
+        .christmas-mode footer {
+            background-color: #c41e3a !important; /* Match Christmas banner */
+            color: white;
+        }
+
+        .footer-content {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .footer-content .footer-text {
+            flex: 1;
+            text-align: left;
+        }
+
+        .footer-content .footer-dropdown {
+            flex: 1;
+            text-align: right;
+        }
+
+        /* Add this to your existing styles section */
+        .user-name {
+            font-family: 'Metropolis', sans-serif;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .dark-mode .user-name {
+            color: black !important;
+        }
+
+        .christmas-mode .user-name {
+            color: white !important;
+        }
+
+        .top-banner-buttons {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .greeting {
+            font-family: 'Metropolis', sans-serif;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .christmas-mode .greeting {
+            display: none;
+        }
+
+        .christmas-mode .user-name::before {
+            content: "Happy Holidays ";
+            font-family: 'Roboto', sans-serif;
+            font-weight: 500;
+        }
+
+        .dark-mode .user-name {
+            color: black !important;
+        }
+
+        .christmas-mode .user-name {
+            color: white !important;
+        }
+
+        .form-label {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            display: block;
+            margin-top: 10px;
+            font-size: 14px;
+            text-align: left;
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        a {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            color: #1DB954;
+            text-decoration: none;
+        }
+
+        .error-message, .success-message {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        /* Add to your existing styles */
+        .password-input-container {
+            position: relative;
+            width: 100%;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            user-select: none;
+        }
+
+        /* Update base styles */
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            color: #333;
+            transition: background-color 0.3s, color 0.3s;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Headers use Metropolis */
+        h1, h2, h3, 
+        #top-banner h1,
+        .btn-custom {
+            font-family: 'Metropolis', sans-serif;
+        }
+
+        /* All other text uses Jakarta Sans */
+        p, input, label, select, button:not(.btn-custom), 
+        .form-control, .error-message, .success-message,
+        .footer-content, #theme-selector, .user-name {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        /* Update form specific styles */
+        .form-label {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        .form-control::placeholder {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 16px;
+        }
+
+        /* Links */
+        a {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            color: #1DB954;
+            text-decoration: none;
+        }
+
+        /* Messages */
+        .error-message, .success-message {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-weight: bold;
+        }
+
+        /* Dark mode heading */
+        .dark-mode h1 {
+            color: #1DB954; /* Light mode green */
+        }
+
+        /* Christmas mode links and heading */
+        .christmas-mode a {
+            color: #c41e3a !important; /* Christmas red color */
+        }
+
+        .christmas-mode a:hover {
+            color: #8b0000 !important; /* Darker Christmas red */
+        }
+
+        /* .christmas-mode h1 {
+            color: #034f1d;
+            font-size: 36px;
+            font-weight: 600;
+            font-family: 'Metropolis', sans-serif;
+        } */
+
+        /* Dark mode banner text */
+        .dark-mode #top-banner h1,
+        .dark-mode #top-banner h1 a,
+        .dark-mode .top-banner-buttons .user-name,
+        .dark-mode .top-banner-buttons a {
+            color: black !important;
+        }
+
+        /* Dark mode footer text */
+        .dark-mode .footer-content,
+        .dark-mode .footer-text {
+            color: black !important;
+        }
+
+        /* Dark mode text styling */
+        .dark-mode p,
+        .dark-mode .or-heading-container h2 {
+            color: #1DB954 !important; /* Spotify green */
+        }
+
+        /* Dark mode button text styling for home page */
+        .dark-mode .start-button,
+        .dark-mode .main-button,
+        .dark-mode .custom-button,
+        .dark-mode .custom-button1,
+        .dark-mode .custom-button2 {
+            color: black !important;
+        }
+
+        /* Keep text black on hover */
+        .dark-mode .start-button:hover,
+        .dark-mode .main-button:hover,
+        .dark-mode .custom-button:hover,
+        .dark-mode .custom-button1:hover,
+        .dark-mode .custom-button2:hover {
+            color: black !important;
+        }
+
+        /* Add these styles to your existing style block */
+        .btn-danger {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            margin-right: 10px;
+        }
+
+        .btn-danger:hover {
+            background-color: #c82333;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1001;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border-radius: 5px;
+            width: 80%;
+            max-width: 400px;
+        }
+
+        .modal-buttons {
+            margin-top: 20px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        .dark-mode .modal-content {
+            background-color: #333;
+            color: white;
+        }
+
+        .christmas-mode .modal-content {
+            background-color: white;
+            color: #034f1d;
+            border: 2px solid #c41e3a;
+        }
+
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .menu-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 5px 10px;
+            transition: opacity 0.3s;
+        }
+
+        .menu-btn:hover {
+            opacity: 0.8;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            right: 0;
+            min-width: 160px;
+            background-color: #1DB954; /* Match top banner color */
+            border-radius: 5px;
+            z-index: 1002;
+        }
+
+        .dropdown-content a {
+            color: white; /* Match banner text color */
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            background: none;
+            transition: background-color 0.3s;
+        }
+
+        .dropdown-content a:hover {
+            background-color: #073625; /* Darker green on hover */
+        }
+
+        /* Dark mode styles */
+        .dark-mode .dropdown-content {
+            background-color: #1DB954; /* Dark background */
+        }
+
+        .dark-mode .dropdown-content a {
+            color: #1DB954; /* Spotify green text */
+        }
+
+        .dark-mode .dropdown-content a:hover {
+            background-color: #444; /* Slightly lighter black on hover */
+        }
+
+        /* Christmas mode styles */
+        .christmas-mode .dropdown-content {
+            background-color: #c41e3a; /* Match Christmas banner color */
+        }
+
+        .christmas-mode .dropdown-content a {
+            color: white;
+        }
+
+        .christmas-mode .dropdown-content a:hover {
+            background-color: #8b0000; /* Darker red on hover */
+        }
+
+        /* Base menu button styling */
+        .menu-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 5px 10px;
+            transition: opacity 0.3s;
+        }
+
+        /* Dark mode menu button styling */
+        .dark-mode .menu-btn {
+            color: black !important;
+        }
+
+        /* Christmas mode menu button styling (if needed) */
+        .christmas-mode .menu-btn {
+            color: white !important;
+        }
+    </style>
+
+    <!-- Block for page-specific extra styles -->
+    {% block extra_styles %}{% endblock %}
+</head>
+<body>
+    <!-- Top Banner -->
+    <header id="top-banner">
+        <div class="d-flex align-items-center">
+            <h1><a href="{% url 'home' %}" style="text-decoration: none; color: white; cursor: pointer;">Wrapped</a></h1>
+        </div>
+
+        <!-- User Info and Buttons -->
+        <div class="top-banner-buttons">
+            {% if user.is_authenticated %}
+                <span class="user-name" style="color: white; margin-right: 15px; font-size: 16px;">
+                    <span class="greeting">Howdy</span> {{ user.username }}!
+                </span>
+                <div class="dropdown">
+                    <button class="menu-btn" onclick="toggleMenu()">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <div id="menuDropdown" class="dropdown-content">
+                        <a href="{% url 'logout' %}">Logout</a>
+                        <a href="#" onclick="showDeleteModal(); return false;">Delete Account</a>
+                    </div>
+                </div>
+            {% else %}
+                <a href="{% url 'register' %}" class="btn btn-custom">Register</a>
+                <a href="{% url 'login' %}" class="btn btn-custom">Login</a>
+            {% endif %}
+        </div>
+    </header>
+
+    <div class="custom-container">
+        {% block content %}{% endblock %}
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-text">
+                &copy; 2024 CS2340 TEAM 50
+            </div>
+            <!-- Update the footer dropdown -->
+            <div class="footer-dropdown">
+                <select id="theme-selector" onchange="changeTheme(this.value)">
+                    <option value="light">Light Mode</option>
+                    <option value="dark">Dark Mode</option>
+                    <option value="christmas">Holiday Mode</option>
+                </select>
+            </div>
+        </div>
+    </footer>
+
+    <div id="deleteAccountModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <h2>Delete Account</h2>
+            <p>This action cannot be undone. Please enter your password to confirm.</p>
+            <input type="password" id="deleteConfirmPassword" class="form-control" placeholder="Enter your password">
+            <div class="modal-buttons">
+                <button onclick="confirmDelete()" class="btn btn-danger">Delete</button>
+                <button onclick="closeDeleteModal()" class="btn btn-secondary">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Function to switch between themes
+        function changeTheme(theme) {
+            // Remove all theme classes first
+            document.body.classList.remove('dark-mode', 'christmas-mode');
+            
+            // Add the selected theme class
+            if (theme === "dark") {
+                document.body.classList.add('dark-mode');
+                // Reset greeting text
+                const greetingElement = document.querySelector('.greeting');
+                if (greetingElement) {
+                    greetingElement.style.display = 'inline';
+                    greetingElement.textContent = 'Howdy';
+                }
+            } else if (theme === "christmas") {
+                document.body.classList.add('christmas-mode');
+                // Hide default greeting (Ho ho ho will be added via CSS)
+                const greetingElement = document.querySelector('.greeting');
+                if (greetingElement) {
+                    greetingElement.style.display = 'none';
+                }
+            } else {
+                // Reset greeting text for light mode
+                const greetingElement = document.querySelector('.greeting');
+                if (greetingElement) {
+                    greetingElement.style.display = 'inline';
+                    greetingElement.textContent = 'Howdy';
+                }
+            }
+            
+            // Save the theme preference
+            localStorage.setItem("theme", theme);
+        }
+
+        // Apply the saved theme on page load
+        window.onload = function() {
+            const savedTheme = localStorage.getItem("theme");
+            if (savedTheme) {
+                document.getElementById("theme-selector").value = savedTheme;
+                changeTheme(savedTheme);
+            }
+        };
+
+        function showDeleteModal() {
+            document.getElementById('deleteAccountModal').style.display = 'block';
+        }
+
+        function closeDeleteModal() {
+            document.getElementById('deleteAccountModal').style.display = 'none';
+            document.getElementById('deleteConfirmPassword').value = '';
+        }
+
+        function confirmDelete() {
+            const password = document.getElementById('deleteConfirmPassword').value;
+            
+            fetch('{% url "delete_account" %}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: JSON.stringify({ password: password })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Account deleted successfully');
+                    window.location.href = '{% url "home" %}';
+                } else {
+                    alert('Incorrect password');
+                }
+            });
+        }
+
+        function toggleMenu() {
+            document.getElementById("menuDropdown").style.display = 
+                document.getElementById("menuDropdown").style.display === "block" ? "none" : "block";
+        }
+
+        // Close the dropdown if user clicks outside of it
+        window.onclick = function(event) {
+            if (!event.target.matches('.menu-btn') && !event.target.matches('.fa-bars')) {
+                var dropdowns = document.getElementsByClassName("dropdown-content");
+                for (var i = 0; i < dropdowns.length; i++) {
+                    var openDropdown = dropdowns[i];
+                    if (openDropdown.style.display === "block") {
+                        openDropdown.style.display = "none";
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Block for page-specific extra scripts -->
+    {% block extra_scripts %}{% endblock %}
+</body>
+</html>

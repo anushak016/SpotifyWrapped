@@ -1,86 +1,276 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        /* Custom styles */
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            height: 100vh;
-            background-image: url('IMG_4543.HEIC');
-            background-repeat: no-repeat;
-            background-attachment: fixed;
-            background-size: cover;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
+{% extends "base.html" %}
+{% load static %}
 
-        #top-banner {
-            background-color: darkseagreen;
-            color: white;
-            padding: 15px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-        }
+{% block title %}Home - Spotify Wrapped{% endblock %}
 
-        .container {
-            background-color: #fff;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            padding: 40px;
-            width: 300px;
-            text-align: center;
-        }
+{% block extra_styles %}
+<style>
+    /* Background styling for home page */
+    body {
+        padding-top: 100px; /* Offset for fixed header */
+        color: #333;
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #f8f9fa;
+    }
 
-        .container h1 {
-            color: darkseagreen;
-            font-size: 24px;
-            margin-bottom: 20px;
-        }
+    /* Container styling */
+    .container {
+        max-width: 400px;
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        padding: 40px;
+        text-align: center;
+    }
 
-        .btn-custom {
-            background-color: darkseagreen;
-            color: #fff;
-            transition: background-color 0.3s ease;
-        }
+    .custom-container {
+        flex: 1;
+        margin-top: 250px; /* Increased from 100px */
+        margin-bottom: 100px; /* Increased from 50px */
+        text-align: center;
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        padding: 40px;
+        width: 100%;
+        max-width: 600px;
+        transition: background-color 0.3s;
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
 
-        .btn-custom:hover {
-            background-color: #073625;
-        }
+    /* Update existing heading styles */
+    h1 {
+        margin-bottom: 30px;
+        font-size: 32px;  /* Consistent size across all themes */
+        font-weight: 600;
+        font-family: 'Metropolis', sans-serif;
+        color: #1DB954;
+    }
 
-        .footer {
-            margin-top: 20px;
-            font-size: 12px;
-            color: #777;
-        }
-    </style>
-</head>
-<body>
+    p, h2 {  /* Add h2 to match p styling */
+        margin-bottom: 25px;
+        color: #666;
+        font-size: 16px;  /* Match paragraph font size */
+        font-family: 'Plus Jakarta Sans', sans-serif;  /* Match font family */
+        font-weight: normal;  /* Match normal font weight */
+    }
 
-    <!-- Top Banner -->
-    <header id="top-banner" class="d-flex justify-content-between align-items-center w-100 fixed-top">
-        <h1 class="ml-3 mb-0">Atlanta Food Finder</h1>
-    </header>
+    .start-button, .main-button, .custom-button, .custom-button1, .custom-button2 {
+        background-color: #1DB954;
+        color: #fff;
+        transition: background-color 0.3s ease;
+        border-radius: 5px;
+        padding: 15px 20px; /* Increase padding for bigger buttons */
+        font-size: 18px;    /* Increase font size for bigger buttons */
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        border: none;
+        width: 100%;        /* Make buttons fill the container width */
+        cursor: pointer;
+        margin-bottom: 10px;
+        text-decoration: none;
+        display: block;     /* Ensure buttons are block elements */
+    }
 
-    <!-- Main Container -->
-    <div class="container mt-5 pt-5">
-        <h1>Welcome</h1>
-        <a href="/auth/register/" class="btn btn-custom mb-2">Register</a>
-        <a href="/auth/login" class="btn btn-custom">Login</a>
-        <div class="footer mt-3">
-            <p>&copy; 2024 CS2340 TEAM 50</p>
+    .start-button:hover, .main-button:hover, .custom-button:hover, .custom-button1:hover, .custom-button2:hover {
+        background-color: #073625;
+    }
+
+    /* Christmas mode button styling for home page */
+    .christmas-mode .start-button,
+    .christmas-mode .main-button,
+    .christmas-mode .custom-button,
+    .christmas-mode .custom-button1,
+    .christmas-mode .custom-button2 {
+        background-color: #C41E3A !important; /* Christmas red */
+        color: #FFFFFF !important; /* Force white text */
+    }
+
+    /* Optional: Darker red on hover */
+    .christmas-mode .start-button:hover,
+    .christmas-mode .main-button:hover,
+    .christmas-mode .custom-button:hover,
+    .christmas-mode .custom-button1:hover,
+    .christmas-mode .custom-button2:hover {
+        background-color: #8B0000 !important; /* Darker red */
+        color: #FFFFFF !important; /* Keep white text on hover */
+    }
+
+    /* Update Christmas mode styles */
+    .christmas-mode h1 {
+        color: #034f1d;  /* Christmas green */
+        font-size: 32px; /* Match the standard size */
+        font-weight: 600;
+        font-family: 'Metropolis', sans-serif;
+    }
+
+    /* Add Christmas mode paragraph and heading styles */
+    .christmas-mode p,
+    .christmas-mode .or-heading-container h2 {
+        color: #034f1d !important; /* Christmas green */
+    }
+
+    .footer {
+        margin-top: 20px;
+        font-size: 12px;
+        color: #777;
+    }
+
+    /* Remove or override any existing h2 specific styles */
+    .custom-buttons-container h2 {
+        margin-bottom: 30px;
+        color: #666;
+        font-size: 16px;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-weight: normal;
+    }
+
+    /* Adjust the main button container */
+    .main-button-container {
+        margin-bottom: 10px; /* Match the spacing between other buttons */
+    }
+
+    /* Adjust the 'Or...generate a customized Wrapped' heading container */
+    .or-heading-container {
+        margin-top: 25px;
+        margin-bottom: 25px; /* Same value as above for equal spacing */
+    }
+
+    /* Remove default margins from the heading */
+    .or-heading-container h2 {
+        margin-top: 0;   /* Remove default top margin */
+        margin-bottom: 0; /* Remove default bottom margin */
+    }
+
+    /* Optional: Adjust spacing between custom buttons */
+    .custom-buttons {
+        display: flex;
+        flex-direction: column;
+        gap: 10px; /* Consistent spacing between all buttons */
+    }
+
+    .custom-buttons a {
+        margin-bottom: 0; /* Remove existing margin since we're using gap */
+    }
+
+    .contact-button-container {
+        margin-top: 30px;
+    }
+
+    .contact-button {
+        background-color: #1DB954;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 5px;
+        text-decoration: none;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        transition: background-color 0.3s ease;
+    }
+
+    .contact-button:hover {
+        background-color: #073625;
+    }
+
+    /* Dark mode styles */
+    .dark-mode .contact-button {
+        color: black;
+    }
+
+    /* Christmas mode styles */
+    .christmas-mode .contact-button {
+        background-color: #C41E3A;
+        color: white !important; /* Force white text */
+    }
+
+    .christmas-mode .contact-button:hover {
+        background-color: #8B0000;
+        color: white !important; /* Keep white text on hover */
+    }
+
+    /* Add these to your existing styles */
+    .game-button {
+        background-color: #1DB954;
+        color: white;
+        padding: 15px 20px;
+        border-radius: 5px;
+        text-decoration: none;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        transition: background-color 0.3s ease;
+        display: block;
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
+    .game-button:hover {
+        background-color: #073625;
+    }
+
+    /* Dark mode styles */
+    .dark-mode .game-button {
+        color: black;
+    }
+
+    /* Christmas mode styles */
+    .christmas-mode .game-button {
+        background-color: #C41E3A;
+        color: white !important; /* Force white text */
+    }
+
+    .christmas-mode .game-button:hover {
+        background-color: #8B0000;
+        color: white !important; /* Keep white text on hover */
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+    <h1>Welcome To Spotify Wrapped</h1>
+    <p>Click below to see your personalized Wraps.</p>
+    <a href="{% url 'saved_wraps' %}" class="start-button">See My Wraps</a>
+    <div class="or-heading-container">
+        <h2>Or...generate a customized Wrapped</h2>
+    </div>
+    <div class="main-button-container">
+        <a href="{% url 'wrapped' %}" class="main-button">Original Wrapped</a>
+    </div>
+    <div class="custom-buttons-container">
+        <div class="custom-buttons">
+            <a href="{% url 'long_term' %}" class="custom-button">Long-term</a>
+            <a href="{% url 'medium_term' %}" class="custom-button">Medium-term</a>
+            <a href="{% url 'short_term' %}" class="custom-button">Short-term</a>
+            <a href="{% url 'christmas' %}" class="custom-button1">Christmas</a>
+            <a href="{% url 'halloween' %}" class="custom-button2">Halloween</a>
         </div>
     </div>
+    <div class="or-heading-container">
+        <h2>Or...play a game!</h2>
+    </div>
+    <div class="game-button-container">
+        <a href="{% url 'timeline_game' %}" class="game-button">Wrapped Game</a>
+    </div>
+    <div class="contact-button-container">
+        <a href="{% url 'contact' %}" class="contact-button">Contact the Developers</a>
+    </div>
+{% endblock %}
 
-    <!-- Bootstrap JS and dependencies -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.6.0/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-</body>
-</html>
+<script>
+function togglePassword(element) {
+    const passwordInput = element.previousElementSibling;
+    const icon = element.querySelector('i');
+    
+    if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        icon.classList.remove('fa-eye-slash');
+        icon.classList.add('fa-eye');
+    } else {
+        passwordInput.type = 'password';
+        icon.classList.remove('fa-eye');
+        icon.classList.add('fa-eye-slash');
+    }
+}
+</script>

@@ -155,3 +155,17 @@ def wrapped(request):
     ]
 
     return render(request, "profile.html", {"slides": slides})
+
+{% extends "base.html" %}
+
+{% block content %}
+<div class="error-container">
+    <h1>Authentication Required</h1>
+    <p>{{ error }}</p>
+    {% if not user.is_authenticated %}
+        <a href="{% url 'login' %}" class="btn btn-custom">Login</a>
+    {% else %}
+        <a href="{% url 'spotify_login' %}" class="btn btn-custom">Connect Spotify</a>
+    {% endif %}
+</div>
+{% endblock %}
