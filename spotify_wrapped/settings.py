@@ -42,7 +42,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'authentication',
-    'wrappedSlides'
+    'wrappedSlides',
+    'game'
 ]
 
 LANGUAGES = [
@@ -129,7 +130,6 @@ LANGUAGES = [
 
 LOCALE_PATHS = [
     BASE_DIR / 'locale',  # Directory to store translation files
-    BASE_DIR / '/locale',  # For translations stored inside your app
 ]
 
 USE_I18N = True

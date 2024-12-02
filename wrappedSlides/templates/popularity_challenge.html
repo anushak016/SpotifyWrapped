@@ -9,37 +9,60 @@
             font-family: "Helvetica Neue", Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #ffffff; /* white background */
-            color: #000; /* black text */
+            background: linear-gradient(45deg, #ff9a9e, #fad0c4, #fbc2eb);
+            background-size: 300% 300%;
+            animation: gradientShift 10s ease infinite;
+            color: #000;
             text-align: center;
         }
+
+        @keyframes gradientShift {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
         h1 {
             margin-top: 20px;
             color: #1db954;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            font-size: 2.5rem;
         }
+
         p {
             margin-bottom: 20px;
         }
+
         .song-list {
             list-style: none;
             padding: 0;
             margin: 20px auto;
             width: 50%;
         }
+
         .song {
             padding: 10px;
             margin: 5px 0;
-            background-color: #f0f0f0; /* light gray for song boxes*/
+            background-color: #f0f0f0; /* light gray for song boxes */
             border-radius: 5px;
             cursor: pointer;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
+
         .song strong {
             color: #1db954;
         }
+
         .song span {
             color: #000; /* black artist text */
         }
+
         button {
             margin: 20px auto;
             padding: 10px 20px;
@@ -49,9 +72,11 @@
             border-radius: 5px;
             cursor: pointer;
         }
+
         button:hover {
             background-color: #1aa34a;
         }
+
         #message {
             position: fixed;
             top: 0;
@@ -68,10 +93,12 @@
             display: none;
             text-align: center;
         }
+
         @keyframes flash {
             0%, 100% { background-color: #000; color: #ff0000; }
             50% { background-color: #ff0000; color: #000; }
         }
+
         .flashing {
             animation: flash 0.4s infinite;
         }
