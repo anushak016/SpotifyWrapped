@@ -20,11 +20,11 @@ document.addEventListener("DOMContentLoaded", () => {
         showSlide(currentIndex);
     });
 
-    // Optional: Auto-transition slides every few seconds
-    // setInterval(() => {
-    //     currentIndex = (currentIndex + 1) % totalSlides;
-    //     showSlide(currentIndex);
-    // }, 5000);  // Adjust timing as desired
+    Optional: Auto-transition slides every few seconds
+    setInterval(() => {
+        currentIndex = (currentIndex + 1) % totalSlides;
+        showSlide(currentIndex);
+    }, 5000);  // Adjust timing as desired
 });
 
 window.onSpotifyWebPlaybackSDKReady = () => {
