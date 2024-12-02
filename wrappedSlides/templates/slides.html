@@ -7,7 +7,6 @@
     <title>Your Wrapped</title>
     <link rel="stylesheet" href="{% static 'styles.css' %}">
     <script src="https://sdk.scdn.co/spotify-player.js"></script>
-    
 </head>
 <body>
     <div id="slide-show">
@@ -66,111 +65,30 @@
 
                 {% elif slide.type == "song_playback" %}
                 <h3>Take a trip down memory lane and revisit those songs you love.</h3>
-                <div id="player" style="position: fixed; bottom: 0; left: 0; width: 100%; background: #222; color: white; padding: 10px; display: flex; align-items: center; justify-content: space-between;">
-                    <div id="current-track-info">
-                        <p id="track-title">No song playing</p>
-                        <p id="track-artist"></p>
-                    </div>
-                    <div>
-                        <button id="prevTrack">Previous</button>
-                        <button id="playPause">Play/Pause</button>
-                        <button id="nextTrack">Next</button>
-                    </div>
-                </div>
                 <ul class="item-list">
                     {% for track in slide.content %}
-                      <li class="track" data-uri="{{ track.uri }}">
-                        {% if track.album.images %}
-                          <img src="{{ track.album.images.0.url }}" alt="Album Cover">
-                        {% endif %}
-                        <div class="track-info">
-                          <p class="item-title">{{ track.name }}</p>
-                          <p>by {% for artist in track.artists %}{{ artist.name }}{% if not forloop.last %}, {% endif %}{% endfor %}</p>
-                          <p>Album: {{ track.album.name }}</p>
-                        </div>
-                      </li>
+                        <li class="track">
+                            {% if track.album.images %}
+                                <img src="{{ track.album.images.0.url }}" alt="Album Cover">
+                            {% endif %}
+                            <div class="track-info">
+                                <p class="item-title">{{ track.name }}</p>
+                                <p>by {% for artist in track.artists %}{{ artist.name }}{% if not forloop.last %}, {% endif %}{% endfor %}</p>
+                                <p>Album: {{ track.album.name }}</p>
+                            </div>
+                            <button class="play-button" data-uri="{{ track.uri }}">Play</button>
+                        </li>
                     {% endfor %}
-                  </ul>
-                  <script>
-                    window.onSpotifyWebPlaybackSDKReady = () => {
-                      const token = "{{ access_token }}";
-                      const player = new Spotify.Player({
-                        name: 'Web Playback SDK Quick Start Player',
-                        getOAuthToken: cb => { cb(token); },
-                        volume: 0.5
-                      });
-            
-                      player.addListener('ready', ({ device_id }) => {
-                            console.log('Ready with Device ID', device_id);
-                        });
-                      window.deviceId = device_id;
-                    
-                      document.getElementById('togglePlay').onclick = function() {
-                          player.togglePlay();
-                        };
-            
-                      player.connect().then(success => {
-                        if (success) {
-                          console.log('The Web Playback SDK successfully connected to Spotify!');
-                        }
-                      });
-
-                      player._options.getOAuthToken(token => {
-                        fetch(`https://api.spotify.com/v1/me/player/play?device_id=${window.deviceId}`, {
-                            method: 'PUT',
-                            headers: {
-                                'Authorization': `Bearer ${token}`,
-                                'Content-Type': 'application/json'
-                            },
-                            body: JSON.stringify({ uris: [trackUri] })
-                        }).then(response => {
-                            if (response.ok) {
-                                console.log('Playback started!');
-                        } else {
-                            console.error('Playback failed', response);
-                        }
-                    });
-                });
-            
-                      // Play a specific track when clicked
-                document.querySelectorAll('.track').forEach(trackElement => {
-                  trackElement.addEventListener('click', function () {
-                    const trackUri = this.getAttribute('data-uri');
-                    currentTrackUri = trackUri;
-            
-                    player._options.getOAuthToken(token => {
-                      fetch(`https://api.spotify.com/v1/me/player/play`, {
-                        method: 'PUT',
-                        headers: {
-                          'Authorization': `Bearer ${token}`,
-                          'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({ uris: [trackUri] })
-                      }).then(() => {
-                        const trackTitle = this.querySelector('.item-title').innerText;
-                        const trackArtist = this.querySelector('.track-info p:nth-child(2)').innerText;
-                        document.getElementById('track-title').innerText = trackTitle;
-                        document.getElementById('track-artist').innerText = trackArtist;
-                      });
-                    });
-                  });
-                });
-            
-                // Play/Pause toggle
-                document.getElementById('playPause').addEventListener('click', () => {
-                  player.togglePlay();
-                });
-            
-                // Next and Previous (you can customize logic for playlist handling)
-                document.getElementById('nextTrack').addEventListener('click', () => {
-                  player.nextTrack();
-                });
-            
-                document.getElementById('prevTrack').addEventListener('click', () => {
-                  player.previousTrack();
-                });
-                    };
-                  </script>
+                </ul>
+                <div id="spotify-player">
+                    <div id="current-track-info">
+                        <img id="current-track-cover" src="" alt="Cover Image" />
+                        <div>
+                            <p id="current-track-title"></p>
+                            <p id="current-track-artist"></p>
+                        </div>
+                    </div>
+                </div>
 
                 {% elif slide.type == "playlists" %}
                     <h3>You curated some nice playlists! Here are some of your faves.</h3>
@@ -212,5 +130,67 @@
     <button id="next">Next</button>
 
     <script src="{% static 'script.js' %}"></script>
+
+<script>
+    
+    document.addEventListener("DOMContentLoaded", () => {
+        const playButtons = document.querySelectorAll(".play-button");
+        const playerTitle = document.getElementById("current-track-title");
+        const playerArtist = document.getElementById("current-track-artist");
+        const playerCover = document.getElementById("current-track-cover");
+
+        let player;
+        let deviceId;
+
+        // Load Spotify SDK
+        window.onSpotifyWebPlaybackSDKReady = () => {
+            player = new Spotify.Player({
+                name: "Your Wrapped Player",
+                getOAuthToken: (cb) => {
+                    cb("{{access_token}}");
+                },
+            });
+
+            // Error handling
+            player.addListener("initialization_error", ({ message }) => console.error(message));
+            player.addListener("authentication_error", ({ message }) => console.error(message));
+            player.addListener("account_error", ({ message }) => console.error(message));
+            player.addListener("playback_error", ({ message }) => console.error(message));
+
+            // Ready
+            player.addListener("ready", ({ device_id }) => {
+                deviceId = device_id;
+            });
+
+            // Connect the player!
+            player.connect();
+        };
+
+        // Handle play button click
+        playButtons.forEach((button) => {
+            button.addEventListener("click", () => {
+                const trackUri = button.getAttribute("data-uri");
+
+                // Update the playback
+                fetch(`https://api.spotify.com/v1/me/player/play?device_id=${deviceId}`, {
+                    method: "PUT",
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem("spotify_access_token")}`,
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ uris: [trackUri] }),
+                })
+                    .then(() => {
+                        // Update the player UI
+                        const trackInfo = button.closest(".track").querySelector(".track-info");
+                        playerTitle.textContent = trackInfo.querySelector(".item-title").textContent;
+                        playerArtist.textContent = trackInfo.querySelector("p:nth-child(2)").textContent;
+                        playerCover.src = button.closest(".track").querySelector("img").src;
+                    })
+                    .catch((error) => console.error("Error playing track:", error));
+            });
+        });
+    });
+</script>
 </body>
 </html>

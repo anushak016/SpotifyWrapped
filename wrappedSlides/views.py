@@ -42,7 +42,7 @@ def fetch_spotify_data(url, headers):
 # Spotify login view
 def spotify_login(request):
     # Spotify authentication URL and scope
-    scope = "user-top-read user-library-read user-read-private user-read-recently-played"
+    scope = "streaming user-read-playback-state user-modify-playback-state user-read-currently-playing user-top-read user-library-read user-read-private user-read-recently-played"
     auth_url = (
         "https://accounts.spotify.com/authorize"
         "?response_type=code"
