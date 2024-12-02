@@ -1,0 +1,170 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-12-01 19:10-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+#: spotify_wrapped/settings.py:125
+msgid "English"
+msgstr "Anglais"
+
+#: spotify_wrapped/settings.py:126
+msgid "Spanish"
+msgstr "Espagnol"
+
+#: spotify_wrapped/settings.py:127
+msgid "French"
+msgstr "Français"
+
+# wrappedSlides/templates/homepage.html
+msgid "Welcome to Wrapped!"
+msgstr ""
+
+msgid "Click to view your Wrapped"
+msgstr ""
+
+msgid "Or...choose a customized Wrapped"
+msgstr ""
+
+msgid "Contact the Developers"
+msgstr ""
+
+msgid "Long-term"
+msgstr ""
+
+msgid "Medium-term"
+msgstr ""
+
+msgid "Short-term"
+msgstr ""
+
+msgid "Christmas"
+msgstr ""
+
+msgid "Halloween"
+msgstr ""
+
+# wrappedSlides/templates/contact.html
+
+msgid "Home"
+msgstr ""
+
+msgid "Contact the Developers"
+msgstr ""
+
+msgid "Full-Stack Developer"
+msgstr ""
+
+# wrappedSlides/templates/christmas.html
+# wrappedSlides/templates/halloween.html
+# wrappedSlides/templates/slides.html
+
+msgid "Profile Picture"
+msgstr ""
+
+msgid"Followers: {{ slide.content.followers.total }}"
+msgstr""
+
+msgid "There's over 100 million songs on Spotify.Are you ready to find out which ones you liked the most?"
+msgstr ""
+
+msgid "You listened to a lot of songs...but these were on repeat!"
+msgstr ""
+
+msgid "Album Cover"
+msgstr ""
+
+msgid "Some artists really caught your eye. These are your top 5"
+msgstr ""
+
+msgid "Take a trip down memory lane and revisit those songs you love."
+msgstr ""
+
+msgid"You curated some nice playlists! Here are some of your faves."
+msgstr""
+
+msgid"Playlist Image"
+msgstr""
+
+msgid"You really explored all the genres, let's take a look!"
+msgstr""
+
+msgid "You made it to the end, {{ slide.content.display_name }}. Keep up the good work and keep listening on"
+msgstr ""
+
+msgid "previous"
+msgstr ""
+
+msgid "next"
+msgstr ""
+
+# authentication/templates/login.html
+
+msgid "Welcome"
+msgstr ""
+
+msgid "Register"
+msgstr ""
+
+msgid "Login"
+msgstr ""
+
+msgid "2024 CS2340 TEAM 50"
+msgstr ""
+
+# authentication/templates/register.html
+msgid "Username:"
+msgstr ""
+
+msgid "Password:"
+msgstr ""
+
+msgid "Confirm Password:"
+msgstr ""
+
+msgid "Security Question:"
+msgstr ""
+
+msgid "Answer:"
+msgstr ""
+
+msgid "Already have an account?"
+msgstr ""
+
+msgid "Login here"
+msgstr ""
+
+# authentication/templates/request_username.html
+
+msgid "Request Username"
+msgstr ""
+
+msgid "Username:"
+msgstr ""
+# authentication/templates/reset_password_question.html
+
+msgid "Security Question:"
+msgstr ""
+
+msgid "Security Answer:"
+msgstr ""
+
+msgid "New Password:"
+msgstr ""
+
+msgid "Confirm Password:"
+msgstr ""
+

@@ -1,0 +1,170 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-12-01 19:10-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? "
+"1 : 2;\n"
+#: spotify_wrapped/settings.py:125
+msgid "English"
+msgstr "Inglés"
+
+#: spotify_wrapped/settings.py:126
+msgid "Spanish"
+msgstr "Español"
+
+#: spotify_wrapped/settings.py:127
+msgid "French"
+msgstr "Francés"
+
+# wrappedSlides/templates/homepage.html
+msgid "Welcome to Wrapped!"
+msgstr "¡Bienvenido a Wrapped!"
+
+msgid "Click to view your Wrapped"
+msgstr "Haz clic para ver tu Wrapped"
+
+msgid "Or...choose a customized Wrapped"
+msgstr "O...elige un Wrapped personalizado"
+
+msgid "Contact the Developers"
+msgstr "Contacta a los Desarrolladores"
+
+msgid "Long-term"
+msgstr "Largo plazo"
+
+msgid "Medium-term"
+msgstr "Mediano plazo"
+
+msgid "Short-term"
+msgstr "Corto plazo"
+
+msgid "Christmas"
+msgstr "Navidad"
+
+msgid "Halloween"
+msgstr "Halloween"
+
+# wrappedSlides/templates/contact.html
+msgid "Home"
+msgstr "Inicio"
+
+msgid "Contact the Developers"
+msgstr "Contacta a los Desarrolladores"
+
+msgid "Full-Stack Developer"
+msgstr "Programador Full-Stack"
+
+# wrappedSlides/templates/christmas.html
+# wrappedSlides/templates/halloween.html
+# wrappedSlides/templates/slides.html
+
+msgid "Profile Picture"
+msgstr "Foto de Perfil"
+
+msgid "Followers: {{ slide.content.followers.total }}"
+msgstr "Seguidores: {{ slide.content.followers.total }}"
+
+msgid "There's over 100 million songs on Spotify. Are you ready to find out which ones you liked the most?"
+msgstr "Hay más de 100 millones de canciones en Spotify. ¿Estás listo para descubrir cuáles fueron tus favoritas?"
+
+msgid "You listened to a lot of songs...but these were on repeat!"
+msgstr "Escuchaste muchas canciones... ¡pero estas fueron las que repetiste!"
+
+msgid "Album Cover"
+msgstr "Portada del Álbum"
+
+msgid "Some artists really caught your eye. These are your top 5"
+msgstr "Algunos artistas realmente llamaron tu atención. Estos son tus 5 mejores"
+
+msgid "Take a trip down memory lane and revisit those songs you love."
+msgstr "Haz un viaje por el camino de la memoria y revive esas canciones que amas."
+
+msgid "You curated some nice playlists! Here are some of your faves."
+msgstr "¡Creaste algunas buenas listas de reproducción! Aquí están algunas de tus favoritas."
+
+msgid "Playlist Image"
+msgstr "Imagen de la Lista de Reproducción"
+
+msgid "You really explored all the genres, let's take a look!"
+msgstr "¡Realmente exploraste todos los géneros, vamos a echar un vistazo!"
+
+msgid "You made it to the end, {{ slide.content.display_name }}. Keep up the good work and keep listening on"
+msgstr "Llegaste hasta el final, {{ slide.content.display_name }}. Sigue así y sigue escuchando"
+
+msgid "previous"
+msgstr "anterior"
+
+msgid "next"
+msgstr "siguiente"
+
+# authentication/templates/login.html
+msgid "Welcome"
+msgstr "Bienvenido"
+
+msgid "Register"
+msgstr "Registrarse"
+
+msgid "Login"
+msgstr "Iniciar sesión"
+
+msgid "2024 CS2340 TEAM 50"
+msgstr "2024 CS2340 EQUIPO 50"
+
+# authentication/templates/register.html
+msgid "Username:"
+msgstr "Nombre de usuario:"
+
+msgid "Password:"
+msgstr "Contraseña:"
+
+msgid "Confirm Password:"
+msgstr "Confirmar contraseña:"
+
+msgid "Security Question:"
+msgstr "Pregunta de seguridad:"
+
+msgid "Answer:"
+msgstr "Respuesta:"
+
+msgid "Already have an account?"
+msgstr "¿Ya tienes una cuenta?"
+
+msgid "Login here"
+msgstr "Inicia sesión aquí"
+
+# authentication/templates/request_username.html
+msgid "Request Username"
+msgstr "Solicitar nombre de usuario"
+
+msgid "Username:"
+msgstr "Nombre de usuario:"
+
+# authentication/templates/reset_password_question.html
+msgid "Security Question:"
+msgstr "Pregunta de seguridad:"
+
+msgid "Security Answer:"
+msgstr "Respuesta de seguridad:"
+
+msgid "New Password:"
+msgstr "Nueva contraseña:"
+
+msgid "Confirm Password:"
+msgstr "Confirmar contraseña:"
+
+
+
