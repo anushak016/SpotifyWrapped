@@ -142,6 +142,9 @@ def fetch_spotify_data(url, headers):
 
 @login_required(login_url='/auth/login/')
 def wrapped(request, time_range, theme):
+    # Get the current theme from session
+    current_theme = request.session.get('theme', 'light')
+    
     access_token = request.session.get("access_token")
     if not access_token:
         return redirect("spotify_login")
@@ -214,7 +217,10 @@ def wrapped(request, time_range, theme):
     elif theme == "halloween":
         return render(request, "halloween.html", {"slides": slides})
     else:
-        return render(request, "slides.html", {"slides": slides})
+        return render(request, "slides.html", {
+            "slides": slides,
+            "current_theme": current_theme
+        })
 
 # Views for specific time ranges
 @spotify_login_required
