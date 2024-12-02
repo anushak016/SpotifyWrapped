@@ -17,6 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from wrappedSlides import views
+from game import views as game_views
 
 urlpatterns = [
     path('', views.home, name='home'),
