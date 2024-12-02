@@ -11,5 +11,7 @@ urlpatterns = [
     path("short/", views.short_term, name="short_term"),
     path("christmas/", views.christmas, name="christmas"),
     path("halloween/", views.halloween, name="halloween"),
+    path("wrap/<int:wrap_id>/", views.view_wrap, name="view_wrap"),
+    path("wrap/<int:wrap_id>/delete/", views.delete_wrap, name="delete_wrap"),
     path("", views.home, name="homepage"),
 ]

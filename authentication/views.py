@@ -1,13 +1,16 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.conf import settings  # Add this import
 from .models import Profile
 from django.db import IntegrityError
 from django.urls import reverse
 from django.utils import timezone
 import datetime
+from django.contrib.auth.decorators import login_required
+from django.views.decorators.http import require_http_methods
+import json
 
 
 def home_view(request):
@@ -19,6 +22,11 @@ def home_view(request):
         request.session.pop('just_registered', None)
         return redirect('login')  # Redirect them to the login page or other safe page
     return render(request, 'home.html')
+
+def home(request):
+    # Get theme from session or default
+    theme = request.session.get('theme', 'default')
+    return render(request, "home.html", {'theme': theme})
 
 def login_view(request):
     if request.method == 'POST':
@@ -178,3 +186,25 @@ def reset_password_view(request):
         })
     
     return render(request, 'reset_password_question.html', {'security_question': profile.security_question})
+
+@login_required(login_url='/auth/login/')
+def saved_wraps(request):
+    # Get the user's saved wraps from the database
+    saved_wraps = request.user.profile.saved_wraps.all().order_by('-created_at')
+    return render(request, 'saved_wraps.html', {'saved_wraps': saved_wraps})
+
+@require_http_methods(["POST"])
+@login_required(login_url='/auth/login/')
+def delete_account(request):
+    data = json.loads(request.body)
+    password = data.get('password')
+    
+    # Verify password
+    user = authenticate(username=request.user.username, password=password)
+    if user is not None:
+        # Delete the user's account
+        user.delete()
+        logout(request)
+        return JsonResponse({'success': True})
+    
+    return JsonResponse({'success': False})

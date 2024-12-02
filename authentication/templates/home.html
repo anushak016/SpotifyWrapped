@@ -26,15 +26,21 @@
         text-align: center;
     }
 
+    /* Update existing heading styles */
     h1 {
         margin-bottom: 20px;
-        font-size: 24px;
+        font-size: 32px;  /* Consistent size across all themes */
+        font-weight: 600;
+        font-family: 'Metropolis', sans-serif;
         color: #1DB954;
     }
 
-    p {
+    p, h2 {  /* Add h2 to match p styling */
         margin-bottom: 30px;
         color: #666;
+        font-size: 16px;  /* Match paragraph font size */
+        font-family: 'Plus Jakarta Sans', sans-serif;  /* Match font family */
+        font-weight: normal;  /* Match normal font weight */
     }
 
     .start-button, .main-button, .custom-button, .custom-button1, .custom-button2 {
@@ -42,19 +48,53 @@
         color: #fff;
         transition: background-color 0.3s ease;
         border-radius: 5px;
-        padding: 10px 20px;
-        font-size: 16px;
+        padding: 15px 20px; /* Increase padding for bigger buttons */
+        font-size: 18px;    /* Increase font size for bigger buttons */
         box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
         border: none;
-        width: 100%;
+        width: 100%;        /* Make buttons fill the container width */
         cursor: pointer;
         margin-bottom: 10px;
         text-decoration: none;
-        display: inline-block;
+        display: block;     /* Ensure buttons are block elements */
     }
 
     .start-button:hover, .main-button:hover, .custom-button:hover, .custom-button1:hover, .custom-button2:hover {
         background-color: #073625;
+    }
+
+    /* Christmas mode button styling for home page */
+    .christmas-mode .start-button,
+    .christmas-mode .main-button,
+    .christmas-mode .custom-button,
+    .christmas-mode .custom-button1,
+    .christmas-mode .custom-button2 {
+        background-color: #C41E3A !important; /* Christmas red */
+        color: #FFFFFF !important; /* Force white text */
+    }
+
+    /* Optional: Darker red on hover */
+    .christmas-mode .start-button:hover,
+    .christmas-mode .main-button:hover,
+    .christmas-mode .custom-button:hover,
+    .christmas-mode .custom-button1:hover,
+    .christmas-mode .custom-button2:hover {
+        background-color: #8B0000 !important; /* Darker red */
+        color: #FFFFFF !important; /* Keep white text on hover */
+    }
+
+    /* Update Christmas mode styles */
+    .christmas-mode h1 {
+        color: #034f1d;  /* Christmas green */
+        font-size: 32px; /* Match the standard size */
+        font-weight: 600;
+        font-family: 'Metropolis', sans-serif;
+    }
+
+    /* Add Christmas mode paragraph and heading styles */
+    .christmas-mode p,
+    .christmas-mode .or-heading-container h2 {
+        color: #034f1d !important; /* Christmas green */
     }
 
     .footer {
@@ -62,21 +102,50 @@
         font-size: 12px;
         color: #777;
     }
+
+    /* Remove or override any existing h2 specific styles */
+    .custom-buttons-container h2 {
+        margin-bottom: 30px;
+        color: #666;
+        font-size: 16px;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-weight: normal;
+    }
+
+    /* Adjust the main button container */
+    .main-button-container {
+        margin-bottom: 30px; /* Adjust this value for desired spacing */
+    }
+
+    /* Adjust the 'Or...choose a customized Wrapped' heading container */
+    .or-heading-container {
+        margin-bottom: 30px; /* Same value as above for equal spacing */
+    }
+
+    /* Remove default margins from the heading */
+    .or-heading-container h2 {
+        margin-top: 0;   /* Remove default top margin */
+        margin-bottom: 0; /* Remove default bottom margin */
+    }
+
+    /* Optional: Adjust spacing between custom buttons */
+    .custom-buttons a {
+        margin-bottom: 10px; /* Space between buttons */
+    }
 </style>
 {% endblock %}
 
 {% block content %}
     <h1>Welcome To Spotify Wrapped</h1>
-    <p>Click below to see your personalized Wrapped experience.</p>
-    <a href="{% url 'spotify_login' %}" class="start-button">See My Wrapped</a>
+    <p>Click below to see your personalized Wrapped.</p>
+    <a href="{% url 'saved_wraps' %}" class="start-button">See My Wrapped</a>
     <div class="main-button-container">
         <a href="{% url 'wrapped' %}" class="main-button">View Original Wrapped</a>
     </div>
-    <div class="main-button-container">
-        <a href="{% url 'wrapped' %}" class="main-button">View Original Wrapped</a>
+    <div class="or-heading-container">
+        <h2>Or...choose a customized Wrapped</h2>
     </div>
     <div class="custom-buttons-container">
-        <h2>Or...choose a customized Wrapped</h2>
         <div class="custom-buttons">
             <a href="{% url 'long_term' %}" class="custom-button">Long-term</a>
             <a href="{% url 'medium_term' %}" class="custom-button">Medium-term</a>
@@ -84,9 +153,6 @@
             <a href="{% url 'christmas' %}" class="custom-button1">Christmas</a>
             <a href="{% url 'halloween' %}" class="custom-button2">Halloween</a>
         </div>
-    </div>
-    <div class="footer">
-        <p>&copy; 2024 CS2340 TEAM 50</p>
     </div>
 {% endblock %}
 

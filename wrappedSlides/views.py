@@ -1,3 +1,5 @@
+from django.http import HttpResponse
+from authentication.models import SavedWrap
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
 from django.utils import timezone
@@ -201,6 +203,12 @@ def wrapped(request, time_range, theme):
         {"type": "end", "title": "The Journey Comes to An End", "content": profile_data,},
     ]
 
+    # Save the wrap to the user's profile
+    request.user.profile.save_wrap(
+        wrap_type=f"{time_range}_{theme}",
+        slides=slides
+    )
+
     if theme == "christmas":
         return render(request, "christmas.html", {"slides": slides})
     elif theme == "halloween":
@@ -268,3 +276,33 @@ def halloween(request):
     if not request.user.profile.spotify_token:
         return redirect('spotify_login')
     return wrapped(request, "default", "halloween")
+
+@login_required(login_url='/auth/login/')
+def view_wrap(request, wrap_id):
+    try:
+        # Get the saved wrap
+        wrap = SavedWrap.objects.get(id=wrap_id, profile=request.user.profile)
+        
+        # Get the slides data
+        slides = wrap.wrap_data
+        
+        # Determine which template to use based on wrap type
+        if "christmas" in wrap.wrap_type:
+            return render(request, "christmas.html", {"slides": slides})
+        elif "halloween" in wrap.wrap_type:
+            return render(request, "halloween.html", {"slides": slides})
+        else:
+            return render(request, "slides.html", {"slides": slides})
+    except SavedWrap.DoesNotExist:
+        return redirect('home')
+
+@login_required(login_url='/auth/login/')
+def delete_wrap(request, wrap_id):
+    if request.method == 'POST':
+        try:
+            wrap = SavedWrap.objects.get(id=wrap_id, profile=request.user.profile)
+            wrap.delete()
+            return HttpResponse(status=200)
+        except SavedWrap.DoesNotExist:
+            return HttpResponse(status=404)
+    return HttpResponse(status=405)

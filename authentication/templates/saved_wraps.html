@@ -1,0 +1,204 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Your Saved Wraps{% endblock %}
+
+{% block extra_styles %}
+<style>
+    /* Background styling */
+    body {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        background-color: #f8f9fa;
+        margin: 0;
+        padding: 0;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    /* Container styling */
+    .custom-container {
+        flex: 1;
+        margin-top: 100px;
+        margin-bottom: 50px;
+        text-align: center;
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        padding: 40px;
+        width: 100%;
+        max-width: 600px;
+        transition: background-color 0.3s;
+        box-sizing: border-box;
+    }
+
+    h1 {
+        margin-bottom: 20px;
+        font-size: 32px;
+        font-weight: 600;
+        font-family: 'Metropolis', sans-serif;
+        color: #1DB954;
+    }
+
+    .wrap-list {
+        list-style: none;
+        padding: 0;
+        margin: 20px 0;
+    }
+
+    /* Base styles for light mode */
+    .wrap-item {
+        background-color: #1DB954; /* Spotify green */
+        border: none;
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 15px;
+        transition: transform 0.2s;
+        cursor: pointer;
+        text-align: left;
+        position: relative; /* For positioning the delete button */
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+    }
+
+    .wrap-content {
+        flex-grow: 1;
+    }
+
+    .delete-button {
+        color: white;
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 5px;
+        font-size: 18px;
+        opacity: 0.8;
+        transition: opacity 0.2s;
+    }
+
+    .delete-button:hover {
+        opacity: 1;
+    }
+
+    .wrap-item:hover {
+        transform: scale(1.02);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        background-color: #073625; /* Darker green on hover */
+    }
+
+    .wrap-date, .wrap-type {
+        color: white;
+    }
+
+    /* Dark mode styles */
+    .dark-mode .custom-container {
+        background-color: #333;
+        color: #fff;
+    }
+
+    .dark-mode .wrap-item {
+        background-color: #1DB954; /* Keep green background */
+        color: black;
+    }
+
+    .dark-mode .wrap-date,
+    .dark-mode .wrap-type {
+        color: black;
+    }
+
+    .dark-mode .wrap-item:hover {
+        background-color: #073625;
+    }
+
+    .dark-mode .delete-button {
+        color: black;
+    }
+
+    /* Christmas mode styles */
+    .christmas-mode .wrap-item {
+        background-color: #C41E3A; /* Christmas red */
+        color: white;
+    }
+
+    .christmas-mode .wrap-date,
+    .christmas-mode .wrap-type {
+        color: white;
+    }
+
+    .christmas-mode .wrap-item:hover {
+        background-color: #8B0000; /* Darker red on hover */
+    }
+
+    .christmas-mode .delete-button {
+        color: white;
+    }
+
+    /* .christmas-mode .custom-container {
+        background-color: #ffffff;
+        color: #034f1d;
+        border: 3px solid #c41e3a;
+        padding: 40px;
+        margin-top: 100px;
+        margin-bottom: 50px;
+        width: 100%;
+        max-width: 600px;
+        transition: background-color 0.3s;
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+    } */
+</style>
+{% endblock %}
+
+{% block content %}
+    <h1>Your Saved Wraps</h1>
+    {% if saved_wraps %}
+        <ul class="wrap-list">
+            {% for wrap in saved_wraps %}
+            <li class="wrap-item">
+                <div class="wrap-content" onclick="location.href='{% url 'view_wrap' wrap.id %}'">
+                    <div class="wrap-date">{{ wrap.created_at|date:"F j, Y" }}</div>
+                    <div class="wrap-type">
+                        {% if "halloween" in wrap.wrap_type %}
+                            Halloween Wrapped
+                        {% elif "christmas" in wrap.wrap_type %}
+                            Christmas Wrapped
+                        {% elif "short_term" in wrap.wrap_type %}
+                            Short-Term Wrapped
+                        {% elif "medium_term" in wrap.wrap_type %}
+                            Medium-Term Wrapped
+                        {% elif "long_term" in wrap.wrap_type %}
+                            Long-Term Wrapped
+                        {% else %}
+                            Original Wrapped
+                        {% endif %}
+                    </div>
+                </div>
+                <button class="delete-button" onclick="deleteWrap({{ wrap.id }})">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>You haven't saved any wraps yet. Create one by going to home and selecting one of the wrapped options!</p>
+    {% endif %}
+
+    <script>
+    function deleteWrap(wrapId) {
+        if (confirm('Are you sure you want to delete this wrap?')) {
+            fetch(`/spotify/wrap/${wrapId}/delete/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}'
+                }
+            }).then(response => {
+                if (response.ok) {
+                    location.reload();
+                }
+            });
+        }
+    }
+    </script>
+{% endblock %}
