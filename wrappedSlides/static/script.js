@@ -2,29 +2,35 @@ document.addEventListener("DOMContentLoaded", () => {
     let currentIndex = 0;
     const slides = document.querySelectorAll(".slide");
     const totalSlides = slides.length;
-
+    const nextButton = document.getElementById("next");
+    const previousButton = document.getElementById("previous");
 
     function showSlide(index) {
         slides.forEach((slide, i) => {
             slide.classList.toggle("active", i === index);
         });
+
+        // Change next button to exit on last slide
+        if (currentIndex === totalSlides - 1) {
+            nextButton.textContent = "Exit";
+            nextButton.onclick = () => window.location.href = '/';
+        } else {
+            nextButton.textContent = "Next";
+            nextButton.onclick = () => {
+                currentIndex = (currentIndex + 1) % totalSlides;
+                showSlide(currentIndex);
+            };
+        }
     }
 
-    document.getElementById("next").addEventListener("click", () => {
-        currentIndex = (currentIndex + 1) % totalSlides;
-        showSlide(currentIndex);
-    });
-
-    document.getElementById("previous").addEventListener("click", () => {
+    // Previous button handler
+    previousButton.addEventListener("click", () => {
         currentIndex = (currentIndex - 1 + totalSlides) % totalSlides;
         showSlide(currentIndex);
     });
 
-    // Optional: Auto-transition slides every few seconds
-    // setInterval(() => {
-    //     currentIndex = (currentIndex + 1) % totalSlides;
-    //     showSlide(currentIndex);
-    // }, 5000);  // Adjust timing as desired
+    // Initial slide display
+    showSlide(currentIndex);
 });
 
 window.onSpotifyWebPlaybackSDKReady = () => {
@@ -70,4 +76,3 @@ window.onSpotifyWebPlaybackSDKReady = () => {
     // Connect to the player!
     player.connect();
 };
-

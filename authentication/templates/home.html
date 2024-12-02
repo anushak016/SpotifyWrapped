@@ -28,7 +28,7 @@
 
     /* Update existing heading styles */
     h1 {
-        margin-bottom: 20px;
+        margin-bottom: 30px;
         font-size: 32px;  /* Consistent size across all themes */
         font-weight: 600;
         font-family: 'Metropolis', sans-serif;
@@ -36,7 +36,7 @@
     }
 
     p, h2 {  /* Add h2 to match p styling */
-        margin-bottom: 30px;
+        margin-bottom: 25px;
         color: #666;
         font-size: 16px;  /* Match paragraph font size */
         font-family: 'Plus Jakarta Sans', sans-serif;  /* Match font family */
@@ -114,12 +114,13 @@
 
     /* Adjust the main button container */
     .main-button-container {
-        margin-bottom: 30px; /* Adjust this value for desired spacing */
+        margin-bottom: 10px; /* Match the spacing between other buttons */
     }
 
-    /* Adjust the 'Or...choose a customized Wrapped' heading container */
+    /* Adjust the 'Or...generate a customized Wrapped' heading container */
     .or-heading-container {
-        margin-bottom: 30px; /* Same value as above for equal spacing */
+        margin-top: 25px;
+        margin-bottom: 25px; /* Same value as above for equal spacing */
     }
 
     /* Remove default margins from the heading */
@@ -129,21 +130,27 @@
     }
 
     /* Optional: Adjust spacing between custom buttons */
+    .custom-buttons {
+        display: flex;
+        flex-direction: column;
+        gap: 10px; /* Consistent spacing between all buttons */
+    }
+
     .custom-buttons a {
-        margin-bottom: 10px; /* Space between buttons */
+        margin-bottom: 0; /* Remove existing margin since we're using gap */
     }
 </style>
 {% endblock %}
 
 {% block content %}
     <h1>Welcome To Spotify Wrapped</h1>
-    <p>Click below to see your personalized Wrapped.</p>
-    <a href="{% url 'saved_wraps' %}" class="start-button">See My Wrapped</a>
-    <div class="main-button-container">
-        <a href="{% url 'wrapped' %}" class="main-button">View Original Wrapped</a>
-    </div>
+    <p>Click below to see your personalized Wraps.</p>
+    <a href="{% url 'saved_wraps' %}" class="start-button">See My Wraps</a>
     <div class="or-heading-container">
-        <h2>Or...choose a customized Wrapped</h2>
+        <h2>Or...generate a customized Wrapped</h2>
+    </div>
+    <div class="main-button-container">
+        <a href="{% url 'wrapped' %}" class="main-button">Original Wrapped</a>
     </div>
     <div class="custom-buttons-container">
         <div class="custom-buttons">

@@ -647,15 +647,15 @@
 
         /* Dark mode styles */
         .dark-mode .dropdown-content {
-            background-color: #1DB954; /* Keep Spotify green */
+            background-color: #1DB954; /* Dark background */
         }
 
         .dark-mode .dropdown-content a {
-            color: black; /* Match dark mode text */
+            color: #1DB954; /* Spotify green text */
         }
 
         .dark-mode .dropdown-content a:hover {
-            background-color: #073625;
+            background-color: #444; /* Slightly lighter black on hover */
         }
 
         /* Christmas mode styles */
@@ -669,6 +669,27 @@
 
         .christmas-mode .dropdown-content a:hover {
             background-color: #8b0000; /* Darker red on hover */
+        }
+
+        /* Base menu button styling */
+        .menu-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 5px 10px;
+            transition: opacity 0.3s;
+        }
+
+        /* Dark mode menu button styling */
+        .dark-mode .menu-btn {
+            color: black !important;
+        }
+
+        /* Christmas mode menu button styling (if needed) */
+        .christmas-mode .menu-btn {
+            color: white !important;
         }
     </style>
 
