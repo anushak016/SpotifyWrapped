@@ -141,13 +141,15 @@
 
         let player;
         let deviceId;
+        const spotifyToken = "{{ slide.token }}";
 
         // Load Spotify SDK
         window.onSpotifyWebPlaybackSDKReady = () => {
+            console.log("Spotify Web Playback SDK is ready!");
             player = new Spotify.Player({
                 name: "Your Wrapped Player",
                 getOAuthToken: (cb) => {
-                    cb("{{access_token}}");
+                    cb(spotifyToken);
                 },
             });
 
@@ -159,6 +161,7 @@
 
             // Ready
             player.addListener("ready", ({ device_id }) => {
+                console.log('Ready with Device ID', device_id);
                 deviceId = device_id;
             });
 
@@ -175,7 +178,7 @@
                 fetch(`https://api.spotify.com/v1/me/player/play?device_id=${deviceId}`, {
                     method: "PUT",
                     headers: {
-                        Authorization: `Bearer ${localStorage.getItem("spotify_access_token")}`,
+                        Authorization: `Bearer ${spotifyToken}`,
                         "Content-Type": "application/json",
                     },
                     body: JSON.stringify({ uris: [trackUri] }),
