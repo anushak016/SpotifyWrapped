@@ -5,9 +5,28 @@ from django.http import HttpResponse
 from .models import Profile
 from django.db import IntegrityError
 from django.urls import reverse
+from django.utils.translation import gettext as _
 
 
 def home_view(request):
+    """
+            Handles the home page view and manages user session after registration.
+
+            This view function checks if the user has just registered by looking for the 'just_registered' flag in the session.
+            If the flag is present, the user is logged out and redirected to the login page. Once logged out, the flag is removed
+            from the session to prevent repeated logouts. If the user is not flagged as just registered, the home page is rendered.
+
+            Parameters:
+                request (HttpRequest): The HTTP request object that triggers this view.
+
+            Returns:
+                HttpResponseRedirect or HttpResponse:
+                    - Redirects to the login page if the user was just registered and logged out.
+                    - Renders the "home.html" template if no action is needed.
+    """
+    context = {
+        'language_name': _('English')
+    }
     # Check if the user has just registered
     if request.session.get('just_registered'):
         # Log out the user
@@ -19,6 +38,26 @@ def home_view(request):
 
 
 def login_view(request):
+    """
+            Handles the login page view and manages user authentication.
+
+            This view function checks if the user has just registered and logs them out if necessary, then redirects them to the
+            login page. It processes the login form submission by verifying the user's credentials. If the credentials are correct,
+            the user is logged in and redirected to the geolocator page. If authentication fails, an error message is displayed on
+            the login page.
+
+            Parameters:
+                request (HttpRequest): The HTTP request object that triggers this view.
+
+            Returns:
+                HttpResponseRedirect or HttpResponse:
+                    - Redirects to the 'geolocator' page if the login is successful.
+                    - Renders the login page with an error message if the login fails.
+                    - Renders the login page when the request method is GET.
+    """
+    context = {
+        'language_name': _('English')
+    }
     # Check if the user has just registered
     if request.session.get('just_registered'):
         logout(request)
@@ -39,11 +78,47 @@ def login_view(request):
     return render(request, 'login.html')
 
 def logout_view(request):
+    context = {
+        'language_name': _('English')
+    }
+    """
+            Handles the logout functionality for the user.
+
+            This view function logs out the currently authenticated user and then redirects them to the login page.
+            It ensures that the user is logged out by calling Django's `logout` function, which clears the user's session.
+
+            Parameters:
+                request (HttpRequest): The HTTP request object that triggers this view.
+
+            Returns:
+                HttpResponseRedirect:
+                    Redirects the user to the login page after successfully logging them out.
+    """
     logout(request)
     return redirect('/auth/login/')
 
 
 def register_view(request):
+    context = {
+        'language_name': _('English')
+    }
+    """
+           Handles user registration by validating the input data and creating a new user account.
+
+           This view processes the registration form where the user provides a username, password,
+           security question, and answer. It checks for errors such as an already existing username,
+           mismatched passwords, or missing security question details. If the data is valid, it creates
+           the user and their profile, including the security question and answer, then redirects the user
+           to the login page.
+
+           Parameters:
+               request (HttpRequest): The HTTP request object that triggers this view.
+
+           Returns:
+               HttpResponse:
+                   - Renders the registration page with an error message if validation fails.
+                   - Redirects the user to the login page if registration is successful.
+    """
     # Check if the user has just registered
     if request.session.get('just_registered'):
         # Log out the user
@@ -98,12 +173,43 @@ def register_view(request):
 
 
 def login_user(request, username):
+    """
+            Logs the user in and redirects them to the geolocator page.
+
+            This view is triggered after the user has successfully registered. It logs in the user
+            using Django's `login` method and redirects them to the 'geolocator' page.
+
+            Parameters:
+                request (HttpRequest): The HTTP request object that triggers this view.
+                username (str): The username of the user being logged in.
+
+            Returns:
+                HttpResponseRedirect: Redirects the user to the 'geolocator' page after successful login.
+    """
     user = User.objects.get(username=username)
     login(request, user)  # Log the user in
     return redirect(reverse('geolocator'))
 
 
 def request_username_view(request):
+    context = {
+        'language_name': _('English')
+    }
+    """
+            Handles the form where the user enters their username to initiate a password reset.
+
+            This view checks if the username provided by the user exists in the system. If the username
+            exists, it stores the username in the session and redirects the user to the reset password page.
+            If the username does not exist, it returns an error message.
+
+            Parameters:
+                request (HttpRequest): The HTTP request object that triggers this view.
+
+            Returns:
+                HttpResponse:
+                    - Renders the username request page with an error message if the username is not found.
+                    - Redirects to the reset password page if the username exists.
+    """
     # Check if the user has just registered
     if request.session.get('just_registered'):
         # Log out the user
@@ -127,6 +233,25 @@ def request_username_view(request):
 
 
 def reset_password_view(request):
+    context = {
+        'language_name': _('English')
+    }
+    """
+           Handles the password reset process by verifying the user's security question answer.
+
+           This view checks the user's answer to their security question. If the answer is correct,
+           it allows the user to set a new password. If the new passwords match, the user's password
+           is updated and they are notified of the successful reset. If any validation fails, an error
+           message is returned.
+
+           Parameters:
+               request (HttpRequest): The HTTP request object that triggers this view.
+
+           Returns:
+               HttpResponse:
+                   - Renders the password reset page with a success message if the reset is successful.
+                   - Renders the page with error messages if the answer or password confirmation fails.
+    """
     # Check if the user has just registered
     if request.session.get('just_registered'):
         # Log out the user
