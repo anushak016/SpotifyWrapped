@@ -5,6 +5,7 @@ from django.http import HttpResponse
 from .models import Profile
 from django.db import IntegrityError
 from django.urls import reverse
+from django.utils.translation import gettext as _
 
 
 def home_view(request):
@@ -23,6 +24,9 @@ def home_view(request):
                     - Redirects to the login page if the user was just registered and logged out.
                     - Renders the "home.html" template if no action is needed.
     """
+    context = {
+        'language_name': _('English')
+    }
     # Check if the user has just registered
     if request.session.get('just_registered'):
         # Log out the user
@@ -51,6 +55,9 @@ def login_view(request):
                     - Renders the login page with an error message if the login fails.
                     - Renders the login page when the request method is GET.
     """
+    context = {
+        'language_name': _('English')
+    }
     # Check if the user has just registered
     if request.session.get('just_registered'):
         logout(request)
@@ -72,6 +79,9 @@ def login_view(request):
 
 
 def logout_view(request):
+    context = {
+        'language_name': _('English')
+    }
     """
             Handles the logout functionality for the user.
 
@@ -90,6 +100,9 @@ def logout_view(request):
 
 
 def register_view(request):
+    context = {
+        'language_name': _('English')
+    }
     """
            Handles user registration by validating the input data and creating a new user account.
 
@@ -180,6 +193,9 @@ def login_user(request, username):
 
 
 def request_username_view(request):
+    context = {
+        'language_name': _('English')
+    }
     """
             Handles the form where the user enters their username to initiate a password reset.
 
@@ -218,6 +234,9 @@ def request_username_view(request):
 
 
 def reset_password_view(request):
+    context = {
+        'language_name': _('English')
+    }
     """
            Handles the password reset process by verifying the user's security question answer.
 

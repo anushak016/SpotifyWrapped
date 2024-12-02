@@ -3,6 +3,7 @@ from collections import Counter
 from django.conf import settings
 from functools import wraps
 from django.shortcuts import redirect, render
+from django.utils.translation import gettext as _
 
 def spotify_login_required(view_func):
     """
@@ -183,6 +184,9 @@ def home(request):
             Returns:
                 HttpResponse: A response that renders the "home.html" template to the client.
     """
+    context = {
+        'language_name': _('English')
+    }
     return render(request, "homepage.html")
 
 # Reusable wrapped view for different time ranges
@@ -207,6 +211,9 @@ def wrapped(request, time_range, theme):
             Returns:
                 HttpResponse: The rendered profile page with the user's Spotify data, or an error page if any step fails.
     """
+    context = {
+        'language_name': _('English')
+    }
     access_token = request.session.get("access_token")
     if not access_token:
         return redirect("spotify_login")
@@ -295,6 +302,9 @@ def default(request):
         Returns:
             HttpResponse: The response from the `wrapped` function displaying the default wrapped data.
     """
+    context = {
+        'language_name': _('English')
+    }
     return wrapped(request, "default", "none")
 
 @spotify_login_required
@@ -312,6 +322,9 @@ def short(request):
         Returns:
             HttpResponse: The response from the `wrapped` function displaying the short-term wrapped data.
     """
+    context = {
+        'language_name': _('English')
+    }
     return wrapped(request, "short_term", "none")
 
 @spotify_login_required
@@ -329,6 +342,9 @@ def medium(request):
         Returns:
             HttpResponse: The response from the `wrapped` function displaying the medium-term wrapped data.
     """
+    context = {
+        'language_name': _('English')
+    }
     return wrapped(request, "medium_term", "none")
 
 @spotify_login_required
@@ -346,6 +362,9 @@ def long(request):
         Returns:
             HttpResponse: The response from the `wrapped` function displaying the long-term wrapped data.
     """
+    context = {
+        'language_name': _('English')
+    }
     return wrapped(request, "long_term", "none")
 
 @spotify_login_required
@@ -363,6 +382,9 @@ def halloween(request):
        Returns:
            HttpResponse: The response from the `wrapped` function displaying the Halloween-themed wrapped data.
     """
+    context = {
+        'language_name': _('English')
+    }
     return wrapped(request, "default", "halloween")
 
 @spotify_login_required
@@ -380,6 +402,9 @@ def holiday(request):
         Returns:
             HttpResponse: The response from the `wrapped` function displaying the Christmas-themed wrapped data.
     """
+    context = {
+        'language_name': _('English')
+    }
     return wrapped(request, "default", "christmas")
 
 def contact(request):
@@ -395,4 +420,7 @@ def contact(request):
         Returns:
             HttpResponse: A rendered response using the `contact.html` template.
     """
+    context = {
+        'language_name': _('English')
+    }
     return render(request, "contact.html")
