@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us</title>
+    <style>
+         .home-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background-color: #1DB954;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            text-decoration: none;
+            text-align: center;
+        }
+        .home-button:hover {
+            background-color: darkgreen;
+        }
+        h1 {
+            margin-top: 60px; /* Adds space below the button */
+            text-align: center;
+            font-size: 32px;
+            font-weight: bold;
+        }
+        body {
+            background-color: #3c3c3c;
+            color: white;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .text-box {
+            width: 80%;
+            max-width: 600px;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            background-color: #3c3c3c;
+            border: 2px solid #6c6c6c; /* Added border around the text box */
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Added subtle shadow for better visual effect */
+        }
+        .text-box strong {
+            font-size: 18px;
+            color: #1DB954; /* Makes the names stand out with a brighter color */
+        }
+        .text-box br {
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Contact the Developers</h1>
+    <div class="text-box"><strong>Paloma Cardozo</strong><br>Full-Stack Developer<br>Email: pmc8@gatech.edu</div>
+    <div class="text-box"><strong>Anusha Kumar</strong><br>Full-Stack Developer<br>Email: akumar895@gatech.edu</div>
+    <div class="text-box"><strong>Yash Panchal</strong><br>Full-Stack Developer<br>Email: ypanchal6@gatech.edu</div>
+    <div class="text-box"><strong>Aditi Umapathy</strong><br>Full-Stack Developer<br>Email: aumapathy7@gatech.edu</div>
+    <div class="text-box"><strong>Richard Xu</strong><br>Full-Stack Developer<br>Email: rxu358@gatech.edu</div>
+    <a href="{% url 'home' %}" class="home-button">Home</a>
+</body>
+</html>

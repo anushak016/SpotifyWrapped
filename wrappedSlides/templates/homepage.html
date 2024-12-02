@@ -16,7 +16,7 @@
 
             <!-- Contact Button -->
             <div class="contact-button-container">
-                <a href="#" class="contact-button">Contact the Developers</a>
+                <a href="contact/" class="contact-button">Contact the Developers</a>
             </div>
         </header>
 
@@ -24,18 +24,18 @@
             <!-- Main Button -->
             <div class="main-button-container">
 {#                <h2>Click to view your Wrapped</h2>#}
-                <a href="{% url 'spotify_login' %}" class="main-button">View Original Wrapped</a>
+                <a href="{% url 'original_wrapped' %}" class="main-button">View Original Wrapped</a>
             </div>
 
             <!-- Customized Wrapped Section -->
             <div class="custom-buttons-container">
                 <h2>Or...choose a customized Wrapped</h2>
                 <div class="custom-buttons">
-                    <a href="#" class="custom-button">Long-term</a>
-                    <a href="#" class="custom-button">Medium-term</a>
-                    <a href="#" class="custom-button">Short-term</a>
-                    <a href="#" class="custom-button1">Christmas</a>
-                    <a href="#" class="custom-button2">Halloween</a>
+                    <a href="{% url 'long_term' %}" class="custom-button">Long-term</a>
+                    <a href="{% url 'medium_term' %}" class="custom-button">Medium-term</a>
+                    <a href="{% url 'short_term' %}" class="custom-button">Short-term</a>
+                    <a href="{% url 'christmas' %}" class="custom-button1">Christmas</a>
+                    <a href="{% url 'halloween' %}" class="custom-button2">Halloween</a>
                 </div>
             </div>
         </main>

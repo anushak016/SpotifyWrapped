@@ -6,13 +6,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Your Wrapped</title>
     <link rel="stylesheet" href="{% static 'styles.css' %}">
+    <script src="https://sdk.scdn.co/spotify-player.js"></script>
+
 </head>
 <body>
     <div id="slide-show">
         {% for slide in slides %}
             <div class="slide{% if forloop.first %} active{% endif %}">
-{#                <h2>{{ slide.title }}</h2>#}
-                <h2>Your Wrapped</h2>
+                <h2>{{ slide.title }}</h2>
 
                 {% if slide.type == "profile" %}
                     <div class="profile">
@@ -24,6 +25,10 @@
                             <p>Followers: {{ slide.content.followers.total }}</p>
                         </div>
                     </div>
+
+                {% elif slide.type == "song_transitions" %}
+                    <h3>There's over 100 million songs on Spotify.
+                        Are you ready to find out which ones you liked the most?</h3>
 
                 {% elif slide.type == "top_tracks" %}
                     <h3>You listened to a lot of songs...but these were on repeat!</h3>
@@ -59,6 +64,21 @@
                         {% endfor %}
                     </ul>
 
+                {% elif slide.type == "song_playback" %}
+                    <h3>Take a trip down memory lane and revisit those songs you love.</h3>
+                    <div id="spotify-player">
+                        <div id="spotify-player-container"></div>
+                        <button id="play-top-songs">Play Top 3 Songs</button>
+                    </div>
+                <script>
+                    // Ensure this block is only included once
+                    const topTracks = [
+                    {% for track in slide.content|slice:":3" %}
+                    "{{ track.uri }}"{% if not forloop.last %}, {% endif %}
+                    {% endfor %}
+                    ];
+                </script>
+
                 {% elif slide.type == "playlists" %}
                     <h3>You curated some nice playlists! Here are some of your faves.</h3>
                     <ul class="item-list">
@@ -85,6 +105,10 @@
                                 </li>
                             {% endfor %}
                         </ul>
+
+                {% elif slide.type == "end" %}
+                    <h3>You made it to the end, {{ slide.content.display_name }}.
+                    Keep up the good work and keep listening on.</h3>
                 {% endif %}
             </div>
         {% endfor %}

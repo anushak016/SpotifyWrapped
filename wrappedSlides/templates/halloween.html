@@ -1,0 +1,322 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Spooky Wrapped</title>
+    <style>
+        /* halloween.css */
+body {
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(135deg, darkorange, rebeccapurple); /* Halloween gradient */
+    color: #333333;
+}
+
+#slide-show {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    position: relative;
+    text-align: center;
+}
+
+h2, h3 {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: black;
+    text-shadow: 2px 2px dimgray;
+}
+
+h3 {
+    font-size: 2rem;
+    color: purple;
+}
+
+.profile {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 30px;
+    justify-content: center;
+    text-align: left;
+}
+
+.profile img {
+    border-radius: 50%;
+    width: 120px;
+    height: 120px;
+    border: 4px solid slategray; /* Fun border color */
+    object-fit: cover;
+    box-shadow: 0 4px 10px rgba(255, 155, 0, 0.6);
+}
+
+.profile h3 {
+    font-size: 1.8rem;
+    margin: 10px 0;
+    color: darkorange;
+}
+
+.profile p {
+    font-size: 1rem;
+    color: #666666; /* Secondary text color */
+}
+
+.item-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.item-list li {
+    background: linear-gradient(135deg, darkgoldenrod, lightgray); /* Soft gradient for items */
+    padding: 15px;
+    border-radius: 12px;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.item-list li:hover {
+    transform: scale(1.05); /* Add pop effect */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2); /* Enhance shadow */
+}
+
+.item-list li img {
+    border-radius: 10px;
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border: 3px solid black; /* Vibrant border */
+    box-shadow: 0 4px 10px rgba(255, 111, 0, 0.5);
+}
+
+.track-info, .artist-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.item-title {
+    font-weight: bold;
+    font-size: 1.2rem;
+    margin-bottom: 5px;
+    color: #333333;
+}
+
+.artist, .playlist {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.track img {
+    width: 60px;
+    height: 60px;
+    border-radius: 10px;
+    object-fit: cover;
+    border: 3px solid #FFD5CD;
+}
+
+button {
+    background: linear-gradient(135deg, darkseagreen, chocolate); /* Gradient button */
+    color: white;
+    border: none;
+    padding: 15px;
+    margin: 10px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    width: 160px;
+    transition: background 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+button:hover {
+    background: linear-gradient(135deg, orangered, darkorange); /* Softer hover gradient */
+    transform: scale(1.05); /* Slight zoom */
+}
+
+button#previous {
+    position: fixed;
+    bottom: 30px;
+    left: 30px;
+    z-index: 10;
+}
+
+button#next {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    z-index: 10;
+}
+
+#slide-show .slide {
+    display: none;
+    animation: fadeIn 0.5s ease;
+}
+
+#slide-show .slide.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.top-genres {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+}
+
+.genre {
+    display: inline-block;
+    background: linear-gradient(45deg, orange, palegreen);
+    color: white;
+    padding: 10px 15px;
+    border-radius: 20px;
+    font-weight: bold;
+    transition: transform 0.3s;
+    text-align: center;
+}
+
+.genre:hover {
+    transform: scale(1.1);
+}
+
+.genre-name {
+    display: block;
+    font-size: 1.2rem;
+}
+
+.genre-count {
+    display: block;
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+
+    </style>
+<!--    <link rel="stylesheet" href="{% static 'halloween.css' %}v=1">-->
+</head>
+<body>
+    <div id="slide-show">
+        {% for slide in slides %}
+            <div class="slide{% if forloop.first %} active{% endif %}">
+                <h2>{{ slide.title }}</h2>
+
+                {% if slide.type == "profile" %}
+                    <div class="profile">
+                        {% if slide.content.images and slide.content.images.0.url %}
+                            <img src="{{ slide.content.images.0.url }}" alt="Profile Picture">
+                        {% endif %}
+                        <div>
+                            <h3>{{ slide.content.display_name }}</h3>
+                            <p>Followers: {{ slide.content.followers.total }}</p>
+                        </div>
+                    </div>
+
+                {% elif slide.type == "song_transition" %}
+                    <h3>Are you ready to find out which ones you liked the most?</h3>
+
+                {% elif slide.type == "top_tracks" %}
+                    <h3>You listened to a lot of songs...but these were on repeat!</h3>
+                    <ul class="item-list">
+                        {% for track in slide.content %}
+                            <li class="track">
+                                {% if track.album.images %}
+                                    <img src="{{ track.album.images.0.url }}" alt="Album Cover">
+                                {% endif %}
+                                <div class="track-info">
+                                    <p class="item-title">{{ track.name }}</p>
+                                    <p>by {% for artist in track.artists %}{{ artist.name }}{% if not forloop.last %}, {% endif %}{% endfor %}</p>
+                                    <p>Album: {{ track.album.name }}</p>
+                                </div>
+                            </li>
+                        {% endfor %}
+                    </ul>
+
+                {% elif slide.type == "top_artists" %}
+                    <h3>Some artists really caught your eye. These are your top 5.</h3>
+                    <ul class="item-list">
+                        {% for artist in slide.content %}
+                            <li class="artist">
+                                {% if artist.images %}
+                                    <img src="{{ artist.images.0.url }}" alt="Artist Image">
+                                {% endif %}
+                                <div class="artist-info">
+                                    <p class="item-title">{{ artist.name }}</p>
+                                    <p>Genres: {{ artist.genres|join:", " }}</p>
+                                    <p>Followers: {{ artist.followers.total }}</p>
+                                </div>
+                            </li>
+                        {% endfor %}
+                    </ul>
+
+                {% elif slide.type == "song_playback" %}
+                    <h3>Take a trip down memory lane and revisit those songs you love.</h3>
+                        <div id="spotify-player">
+                        <div id="spotify-player-container"></div>
+                        <button id="play-top-songs">Play Top 3 Songs</button>
+                    </div>
+
+                {% elif slide.type == "playlists" %}
+                    <h3>You curated some nice playlists! Here are some of your faves.</h3>
+                    <ul class="item-list">
+                        {% for playlist in slide.content %}
+                            <li class="playlist">
+                                {% if playlist.images %}
+                                    <img src="{{ playlist.images.0.url }}" alt="Playlist Image">
+                                {% endif %}
+                                <div>
+                                    <p class="item-title">{{ playlist.name }}</p>
+                                    <p>Tracks: {{ playlist.tracks.total }}</p>
+                                </div>
+                            </li>
+                        {% endfor %}
+                    </ul>
+
+                {% elif slide.type == "top_genres" %}
+                    <h3>You really explored all the genres, let's take a look!</h3>
+                        <ul class = "top-genres">
+                            {% for genre in slide.content %}
+                                <li class="genre">
+                                    <span class="genre-name" style="font-size: {{ genre.count|add:10 }}px;">{{ genre.genre }}</span>
+                                    <span class="genre-count">({{ genre.count }} artists)</span>
+                                </li>
+                            {% endfor %}
+                        </ul>
+
+                {% elif slide.type == "end" %}
+                    <h3>You made it to the end, {{ slide.content.display_name }}.
+                    Keep up the good work and keep listening on.</h3>
+                {% endif %}
+            </div>
+        {% endfor %}
+    </div>
+
+    <!-- Navigation buttons -->
+    <button id="previous">Previous</button>
+    <button id="next">Next</button>
+
+    <script src="{% static 'script.js' %}"></script>
+</body>
+</html>
+

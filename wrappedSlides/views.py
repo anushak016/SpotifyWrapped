@@ -1,13 +1,127 @@
-import requests, json
-from django.conf import settings
-from django.shortcuts import redirect, render
-from urllib.parse import urlencode
+import requests
 from collections import Counter
+from django.conf import settings
+from functools import wraps
+from django.shortcuts import redirect, render
+from django.utils.translation import gettext as _
 
-# Create your views here.
+def spotify_login_required(view_func):
+    """
+           Initiates the Spotify OAuth authorization flow by redirecting the user to Spotify's login page.
 
+           This view function constructs the URL required for Spotify's authorization process, which includes the client ID,
+           redirect URI, and required scope. It then redirects the user to this URL to begin the OAuth authorization flow.
+
+           Parameters:
+               request (HttpRequest): The HTTP request object that triggers the login process.
+
+           Returns:
+               HttpResponseRedirect: A redirect response to Spotify's authorization page, where the user can grant access to their data.
+    """
+    @wraps(view_func)
+    def wrapper(request, *args, **kwargs):
+        """
+        Wrapper function to check if the user is authenticated before accessing a view.
+
+        This function is used to protect views by ensuring that the user is authenticated
+        (i.e., has an access token stored in the session). If the user is not authenticated,
+        it stores the requested path in the session and redirects the user to the Spotify login
+        page. Once the user logs in, they will be redirected back to the saved destination.
+
+        Args:
+            request (HttpRequest): The HTTP request object containing session data and request details.
+            *args: Additional positional arguments passed to the wrapped view function.
+            **kwargs: Additional keyword arguments passed to the wrapped view function.
+
+        Returns:
+            HttpResponse: A redirect response to the Spotify login page if the user is not authenticated,
+                           or the original view response if the user is authenticated.
+
+        Example:
+            @login_required_view
+            def my_view(request):
+                # View code here
+        """
+        # Check if the user is authenticated (access_token in session)
+        if not request.session.get("access_token"):
+            # Save the intended destination in the session
+            request.session['redirect_after_login'] = request.path
+            # Redirect to the Spotify login URL
+            return redirect('spotify_login')  # Replace with your login URL name
+        return view_func(request, *args, **kwargs)
+    return wrapper
+
+# Utility function to exchange code for an access token
+def get_access_token(auth_code):
+    """
+        Get an access token from Spotify using the authorization code.
+
+        This function sends a POST request to Spotify's token endpoint to exchange
+        the provided authorization code for an access token. It includes necessary
+        credentials (client ID, client secret, and redirect URI) and returns the
+        access token if the request is successful (HTTP status code 200). If the
+        request fails or the access token is not returned, it returns None.
+
+        Args:
+            auth_code (str): The authorization code received from Spotify after the user grants permission.
+
+        Returns:
+            str or None: The access token if the request is successful, otherwise None.
+
+    """
+    token_url = "https://accounts.spotify.com/api/token"
+    payload = {
+        "grant_type": "authorization_code",
+        "code": auth_code,
+        "redirect_uri": settings.SPOTIFY_REDIRECT_URI,
+        "client_id": settings.SPOTIFY_CLIENT_ID,
+        "client_secret": settings.SPOTIFY_CLIENT_SECRET,
+    }
+    headers = {"Content-Type": "application/x-www-form-urlencoded"}
+    response = requests.post(token_url, data=payload, headers=headers)
+    if response.status_code == 200:
+        return response.json().get("access_token")
+    return None
+
+# Utility function to fetch data from Spotify API
+def fetch_spotify_data(url, headers):
+    """
+        Fetch data from the Spotify API.
+
+        This function sends a GET request to the specified URL with the provided
+        headers, typically for interacting with the Spotify API. If the request is
+        successful (HTTP status code 200), it returns the response data as a JSON object.
+        If the request fails or the status code is not 200, it returns an empty dictionary.
+
+        Args:
+            url (str): The URL to which the GET request is sent, typically an API endpoint.
+            headers (dict): A dictionary of headers to include in the request, such as authorization tokens.
+
+        Returns:
+            dict: The JSON response data from the API if the request is successful, otherwise an empty dictionary.
+
+    """
+    response = requests.get(url, headers=headers)
+    if response.status_code == 200:
+        return response.json()
+    return {}
+
+# Spotify login view
 def spotify_login(request):
-    scope = 'user-top-read user-library-read user-read-private user-read-recently-played'
+    """
+           Initiates the Spotify OAuth authorization flow by redirecting the user to Spotify's login page.
+
+           This view function constructs the URL required for Spotify's authorization process, which includes the client ID,
+           redirect URI, and required scope. It then redirects the user to this URL to begin the OAuth authorization flow.
+
+           Parameters:
+               request (HttpRequest): The HTTP request object that triggers the login process.
+
+           Returns:
+               HttpResponseRedirect: A redirect response to Spotify's authorization page, where the user can grant access to their data.
+           """
+    # Spotify authentication URL and scope
+    scope = "user-top-read user-library-read user-read-private user-read-recently-played"
     auth_url = (
         "https://accounts.spotify.com/authorize"
         "?response_type=code"
@@ -17,106 +131,296 @@ def spotify_login(request):
     )
     return redirect(auth_url)
 
+def spotify_callback(request):
+    """
+        Handle the callback from Spotify after user authentication.
+
+        This function is called when Spotify redirects back to the application after
+        the user grants permission. It retrieves the authorization code from the
+        request, exchanges it for an access token, and stores the token in the session.
+        If authentication is successful, the user is redirected to the originally
+        requested page (if available) or to the homepage. If the authentication fails,
+        an error message is displayed.
+
+        Args:
+            request (HttpRequest): The HTTP request object containing the authorization code
+                                   and session data.
+
+        Returns:
+            HttpResponse: A redirect to the original destination or homepage if successful,
+                           or a rendered error page if authentication fails.
+
+        Example:
+            @spotify_callback
+            def callback_view(request):
+                # Callback handling logic
+    """
+    # Exchange the auth code for an access token
+    code = request.GET.get("code")
+    if not code:
+        return redirect("homepage")  # Or any error page
+
+    access_token = get_access_token(code)
+    if access_token:
+        request.session["access_token"] = access_token
+
+        # Redirect to the original destination (if any) or homepage
+        redirect_url = request.session.pop('redirect_after_login', 'homepage')
+        return redirect(redirect_url)
+
+    return render(request, "error.html", {"error": "Failed to authenticate with Spotify."})
+
+# Homepage view
 def home(request):
+    """
+            Renders the home page of the application.
+
+            This view function is responsible for rendering the "home.html" template. It does not process any input or perform
+            any dynamic operations, but simply returns the static home page view.
+
+            Parameters:
+                request (HttpRequest): The HTTP request object that triggers the rendering of the home page.
+
+            Returns:
+                HttpResponse: A response that renders the "home.html" template to the client.
+    """
+    context = {
+        'language_name': _('English')
+    }
     return render(request, "homepage.html")
 
-def wrapped(request):
-    # Step 1: Get the authorization code from the URL
-    code = request.GET.get("code")
+# Reusable wrapped view for different time ranges
+def wrapped(request, time_range, theme):
+    """
+            Handles the Spotify OAuth authorization code flow and retrieves user data.
 
-    if not code:
-        return render(request, "home.html", {"error": "Authorization failed or was canceled"})
+            This view function processes the authorization code received from Spotify, exchanges it for an access token,
+            and then fetches the user's profile data, top tracks, top artists, and playlists from the Spotify API.
+            It prepares the data to be displayed on the user's profile page.
 
-    # Store the code in the session (if you haven't already done so)
-    request.session['auth_code'] = code
+            Steps:
+                1. Get the authorization code from the GET request.
+                2. Exchange the authorization code for an access token.
+                3. Use the access token to fetch the user's profile data.
+                4. Fetch the user's top tracks, top artists, and playlists.
+                5. Prepare the data and render it on the profile page.
 
-    # Step 2: Exchange the authorization code for an access token
-    token_url = "https://accounts.spotify.com/api/token"
-    payload = {
-        "grant_type": "authorization_code",
-        "code": code,
-        "redirect_uri": settings.SPOTIFY_REDIRECT_URI,
-        "client_id": settings.SPOTIFY_CLIENT_ID,
-        "client_secret": settings.SPOTIFY_CLIENT_SECRET,
+            Parameters:
+                request (HttpRequest): The HTTP request object containing the authorization code and other metadata.
+
+            Returns:
+                HttpResponse: The rendered profile page with the user's Spotify data, or an error page if any step fails.
+    """
+    context = {
+        'language_name': _('English')
     }
-    headers = {"Content-Type": "application/x-www-form-urlencoded"}
+    access_token = request.session.get("access_token")
+    if not access_token:
+        return redirect("spotify_login")
+        # return render(request, "error.html", {"error": "Failed to obtain access token."})
 
-    response = requests.post(token_url, data=payload, headers=headers)
+    headers = {"Authorization": f"Bearer {access_token}"}
 
-    if response.status_code != 200:
-        return render(request, "error.html", {"error": "Failed to obtain access token."})
+    # Fetch Spotify data
+    if time_range == "default":
+        profile_url = "https://api.spotify.com/v1/me"
+        profile_data = fetch_spotify_data(profile_url, headers)
 
-    # Step 3: Extract the access token
-    response_data = response.json()
-    access_token = response_data.get("access_token")
+        top_tracks_url = "https://api.spotify.com/v1/me/top/tracks?limit=5"
+        top_tracks_response = requests.get(top_tracks_url, headers=headers)
+        top_tracks_data = top_tracks_response.json().get("items", []) if top_tracks_response.status_code == 200 else []
 
-    if access_token:
-        headers = {"Authorization": f"Bearer {access_token}"}
+        top_artists_url = "https://api.spotify.com/v1/me/top/artists?limit=5"
+        top_artists_response = requests.get(top_artists_url, headers=headers)
+        top_artists_data = top_artists_response.json().get("items",[]) if top_artists_response.status_code == 200 else []
 
-    # Step 4: Fetch user profile data
-    profile_url = "https://api.spotify.com/v1/me"
-    profile_response = requests.get(profile_url, headers=headers)
-    profile_data = profile_response.json() if profile_response.status_code == 200 else None
+        playlists_url = "https://api.spotify.com/v1/me/playlists?limit=5"
+        playlists_response = requests.get(playlists_url, headers=headers)
+        playlists_data = playlists_response.json().get("items", []) if playlists_response.status_code == 200 else []
 
-    # Step 5: Fetch other data (top tracks, artists, playlists, etc.)
-    top_tracks_url = "https://api.spotify.com/v1/me/top/tracks?limit=5"
-    top_tracks_response = requests.get(top_tracks_url, headers=headers)
-    top_tracks_data = top_tracks_response.json().get("items", []) if top_tracks_response.status_code == 200 else []
+        # Aggregate genres
+        all_genres = []
+        for artist in top_artists_data:
+            all_genres.extend(artist.get("genres", []))
 
-    playlists_url = "https://api.spotify.com/v1/me/playlists?limit=5"
-    playlists_response = requests.get(playlists_url, headers=headers)
-    playlists_data = playlists_response.json().get("items", []) if playlists_response.status_code == 200 else []
+        genre_counts = Counter(all_genres)
+        top_genres = genre_counts.most_common()
+    else:
+        profile_url = "https://api.spotify.com/v1/me"
+        profile_data = fetch_spotify_data(profile_url, headers)
 
-    top_artists_url = "https://api.spotify.com/v1/me/top/artists?limit=5"
-    top_artists_response = requests.get(top_artists_url, headers=headers)
-    top_artists_data = top_artists_response.json().get("items", []) if top_artists_response.status_code == 200 else []
+        top_tracks_url = f"https://api.spotify.com/v1/me/top/tracks?time_range={time_range}&limit=5"
+        top_tracks_response = requests.get(top_tracks_url, headers=headers)
+        top_tracks_data = top_tracks_response.json().get("items", []) if top_tracks_response.status_code == 200 else []
 
-    all_genres = []
-    for artist in top_artists_data:
-        all_genres.extend(artist.get("genres", []))
+        top_artists_url = f"https://api.spotify.com/v1/me/top/artists?time_range={time_range}&limit=5"
+        top_artists_data = fetch_spotify_data(top_artists_url, headers).get("items", [])
 
-    genre_counts = Counter(all_genres)
+        playlists_url = "https://api.spotify.com/v1/me/playlists?limit=5"
+        playlists_response = requests.get(playlists_url, headers=headers)
+        playlists_data = playlists_response.json().get("items", []) if playlists_response.status_code == 200 else []
 
-    # Get the top 5 genres
-    top_genres = genre_counts.most_common(6)
+        # Aggregate genres
+        all_genres = []
+        for artist in top_artists_data:
+            all_genres.extend(artist.get("genres", []))
 
-    # Format data for the slide
-    fun_genres_slide = {
-        "type": "top_genres",
-        "title": "Your Top Genres",
-        "content": [{"genre": genre, "count": count} for genre, count in top_genres],
-    }
+        genre_counts = Counter(all_genres)
+        top_genres = genre_counts.most_common()
 
-    # Step 6: Reset the authorization code in the session after it's been used
-    request.session.pop('auth_code', None)
-
-    # Step 7: Return the data to the user in the response
     slides = [
-        {
-            "type": "profile",
-            "title": "Your Profile",
-            "content": profile_data,
-        },
-        {
-            "type": "top_tracks",
-            "title": "Top Tracks",
-            "content": top_tracks_data,
-        },
-        {
-            "type": "top_artists",
-            "title": "Top Artists",
-            "content": top_artists_data,
-        },
-        {
-            "type": "playlists",
-            "title": "Playlists",
-            "content": playlists_data,
-        },
-        {
-            "type": "overall_stats",
-            "title": "Your Listening Overview",
-            "content": fun_genres_slide,
-        },
+        {"type": "profile", "title": "Welcome to Your Wrapped!", "content": profile_data},
+        {"type": "song_transitions", "title": "Keep Clicking to Find Out Your Biggest Secrets :)", },
+        {"type": "top_tracks", "title": "Top Tracks", "content": top_tracks_data},
+        {"type": "song_playback:", "title": "Listen Back To Your Favorites", "content": top_tracks_data, "token": access_token, },
+        {"type": "top_artists", "title": "Top Artists", "content": top_artists_data},
+        {"type": "playlists", "title": "Playlists", "content": playlists_data,},
+        {"type": "top_genres", "title": "Top Genres", "content": [{"genre": genre, "count": count} for genre, count in top_genres]},
+        {"type": "end", "title": "The Journey Comes to An End", "content": profile_data,},
     ]
 
-    return render(request, "profile.html", {"slides": slides})
+    if theme == "christmas":
+        return render(request, "christmas.html", {"slides": slides})
+    elif theme == "halloween":
+        return render(request, "halloween.html", {"slides": slides})
+    else:
+        return render(request, "slides.html", {"slides": slides})
+
+# Views for specific time ranges
+@spotify_login_required
+def default(request):
+    """
+        View for displaying default wrapped data for the user.
+
+        This view is decorated with the `spotify_login_required` decorator to ensure
+        that only authenticated users with a valid Spotify access token can access it.
+        It calls the `wrapped` function to display the default wrapped data for the user.
+
+        Args:
+            request (HttpRequest): The HTTP request object containing session data and request details.
+
+        Returns:
+            HttpResponse: The response from the `wrapped` function displaying the default wrapped data.
+    """
+    context = {
+        'language_name': _('English')
+    }
+    return wrapped(request, "default", "none")
+
+@spotify_login_required
+def short(request):
+    """
+        View for displaying short-term wrapped data for the user.
+
+        This view is decorated with the `spotify_login_required` decorator to ensure
+        that only authenticated users with a valid Spotify access token can access it.
+        It calls the `wrapped` function to display short-term wrapped data for the user.
+
+        Args:
+            request (HttpRequest): The HTTP request object containing session data and request details.
+
+        Returns:
+            HttpResponse: The response from the `wrapped` function displaying the short-term wrapped data.
+    """
+    context = {
+        'language_name': _('English')
+    }
+    return wrapped(request, "short_term", "none")
+
+@spotify_login_required
+def medium(request):
+    """
+        View for displaying medium-term wrapped data for the user.
+
+        This view is decorated with the `spotify_login_required` decorator to ensure
+        that only authenticated users with a valid Spotify access token can access it.
+        It calls the `wrapped` function to display medium-term wrapped data for the user.
+
+        Args:
+            request (HttpRequest): The HTTP request object containing session data and request details.
+
+        Returns:
+            HttpResponse: The response from the `wrapped` function displaying the medium-term wrapped data.
+    """
+    context = {
+        'language_name': _('English')
+    }
+    return wrapped(request, "medium_term", "none")
+
+@spotify_login_required
+def long(request):
+    """
+        View for displaying long-term wrapped data for the user.
+
+        This view is decorated with the `spotify_login_required` decorator to ensure
+        that only authenticated users with a valid Spotify access token can access it.
+        It calls the `wrapped` function to display long-term wrapped data for the user.
+
+        Args:
+            request (HttpRequest): The HTTP request object containing session data and request details.
+
+        Returns:
+            HttpResponse: The response from the `wrapped` function displaying the long-term wrapped data.
+    """
+    context = {
+        'language_name': _('English')
+    }
+    return wrapped(request, "long_term", "none")
+
+@spotify_login_required
+def halloween(request):
+    """
+       View for displaying Halloween-themed wrapped data for the user.
+
+       This view is decorated with the `spotify_login_required` decorator to ensure
+       that only authenticated users with a valid Spotify access token can access it.
+       It calls the `wrapped` function to display Halloween-themed wrapped data for the user.
+
+       Args:
+           request (HttpRequest): The HTTP request object containing session data and request details.
+
+       Returns:
+           HttpResponse: The response from the `wrapped` function displaying the Halloween-themed wrapped data.
+    """
+    context = {
+        'language_name': _('English')
+    }
+    return wrapped(request, "default", "halloween")
+
+@spotify_login_required
+def holiday(request):
+    """
+        View for displaying Christmas-themed wrapped data for the user.
+
+        This view is decorated with the `spotify_login_required` decorator to ensure
+        that only authenticated users with a valid Spotify access token can access it.
+        It calls the `wrapped` function to display Christmas-themed wrapped data for the user.
+
+        Args:
+            request (HttpRequest): The HTTP request object containing session data and request details.
+
+        Returns:
+            HttpResponse: The response from the `wrapped` function displaying the Christmas-themed wrapped data.
+    """
+    context = {
+        'language_name': _('English')
+    }
+    return wrapped(request, "default", "christmas")
+
+def contact(request):
+    """
+        View for displaying the contact page.
+
+        This view renders the `contact.html` template, providing the user with a page
+        to contact the service or support team.
+
+        Args:
+            request (HttpRequest): The HTTP request object containing session data and request details.
+
+        Returns:
+            HttpResponse: A rendered response using the `contact.html` template.
+    """
+    context = {
+        'language_name': _('English')
+    }
+    return render(request, "contact.html")
