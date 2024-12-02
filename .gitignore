@@ -1,0 +1,9 @@
+# Ignore Python bytecode
+*.pyc
+__pycache__/
+
+# Ignore other unwanted files or directories
+*.log
+*.env
+.DS_Store
+db.sqlite3
