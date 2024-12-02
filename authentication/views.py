@@ -38,7 +38,6 @@ def login_view(request):
             return render(request, 'login.html', {'error_message': error_message})
     return render(request, 'login.html')
 
-
 def logout_view(request):
     logout(request)
     return redirect('/auth/login/')
