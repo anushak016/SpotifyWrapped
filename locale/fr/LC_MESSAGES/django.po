@@ -31,140 +31,136 @@ msgstr "Français"
 
 # wrappedSlides/templates/homepage.html
 msgid "Welcome to Wrapped!"
-msgstr ""
+msgstr "Bienvenue dans Wrapped !"
 
 msgid "Click to view your Wrapped"
-msgstr ""
+msgstr "Cliquez pour voir votre Wrapped"
 
 msgid "Or...choose a customized Wrapped"
-msgstr ""
+msgstr "Ou... choisissez un Wrapped personnalisé"
 
 msgid "Contact the Developers"
-msgstr ""
+msgstr "Contactez les développeurs"
 
 msgid "Long-term"
-msgstr ""
+msgstr "Long terme"
 
 msgid "Medium-term"
-msgstr ""
+msgstr "Moyen terme"
 
 msgid "Short-term"
-msgstr ""
+msgstr "Court terme"
 
 msgid "Christmas"
-msgstr ""
+msgstr "Noël"
 
 msgid "Halloween"
-msgstr ""
+msgstr "Halloween"
 
 # wrappedSlides/templates/contact.html
-
 msgid "Home"
-msgstr ""
+msgstr "Accueil"
 
 msgid "Contact the Developers"
-msgstr ""
+msgstr "Contactez les développeurs"
 
 msgid "Full-Stack Developer"
-msgstr ""
+msgstr "Développeur Full-Stack"
 
 # wrappedSlides/templates/christmas.html
 # wrappedSlides/templates/halloween.html
 # wrappedSlides/templates/slides.html
 
 msgid "Profile Picture"
-msgstr ""
+msgstr "Photo de profil"
 
-msgid"Followers: {{ slide.content.followers.total }}"
-msgstr""
+msgid "Followers: {{ slide.content.followers.total }}"
+msgstr "Abonnés : {{ slide.content.followers.total }}"
 
-msgid "There's over 100 million songs on Spotify.Are you ready to find out which ones you liked the most?"
-msgstr ""
+msgid "There's over 100 million songs on Spotify. Are you ready to find out which ones you liked the most?"
+msgstr "Il y a plus de 100 millions de chansons sur Spotify. Êtes-vous prêt à découvrir celles que vous avez le plus appréciées ?"
 
-msgid "You listened to a lot of songs...but these were on repeat!"
-msgstr ""
+msgid "You listened to a lot of songs... but these were on repeat!"
+msgstr "Vous avez écouté beaucoup de chansons... mais celles-ci étaient en boucle !"
 
 msgid "Album Cover"
-msgstr ""
+msgstr "Couverture de l'album"
 
 msgid "Some artists really caught your eye. These are your top 5"
-msgstr ""
+msgstr "Certains artistes ont vraiment attiré votre attention. Voici vos 5 meilleurs"
 
 msgid "Take a trip down memory lane and revisit those songs you love."
-msgstr ""
+msgstr "Faites un voyage dans le passé et revivez ces chansons que vous aimez."
 
-msgid"You curated some nice playlists! Here are some of your faves."
-msgstr""
+msgid "You curated some nice playlists! Here are some of your faves."
+msgstr "Vous avez créé de belles playlists ! Voici quelques-unes de vos préférées."
 
-msgid"Playlist Image"
-msgstr""
+msgid "Playlist Image"
+msgstr "Image de la playlist"
 
-msgid"You really explored all the genres, let's take a look!"
-msgstr""
+msgid "You really explored all the genres, let's take a look!"
+msgstr "Vous avez vraiment exploré tous les genres, jetons un œil !"
 
 msgid "You made it to the end, {{ slide.content.display_name }}. Keep up the good work and keep listening on"
-msgstr ""
+msgstr "Vous êtes arrivé à la fin, {{ slide.content.display_name }}. Continuez comme ça et continuez à écouter"
 
 msgid "previous"
-msgstr ""
+msgstr "précédent"
 
 msgid "next"
-msgstr ""
+msgstr "suivant"
 
 # authentication/templates/login.html
-
 msgid "Welcome"
-msgstr ""
+msgstr "Bienvenue"
 
 msgid "Register"
-msgstr ""
+msgstr "S'inscrire"
 
 msgid "Login"
-msgstr ""
+msgstr "Se connecter"
 
 msgid "2024 CS2340 TEAM 50"
-msgstr ""
+msgstr "2024 CS2340 ÉQUIPE 50"
 
 # authentication/templates/register.html
 msgid "Username:"
-msgstr ""
+msgstr "Nom d'utilisateur :"
 
 msgid "Password:"
-msgstr ""
+msgstr "Mot de passe :"
 
 msgid "Confirm Password:"
-msgstr ""
+msgstr "Confirmer le mot de passe :"
 
 msgid "Security Question:"
-msgstr ""
+msgstr "Question de sécurité :"
 
 msgid "Answer:"
-msgstr ""
+msgstr "Réponse :"
 
 msgid "Already have an account?"
-msgstr ""
+msgstr "Vous avez déjà un compte ?"
 
 msgid "Login here"
-msgstr ""
+msgstr "Se connecter ici"
 
 # authentication/templates/request_username.html
-
 msgid "Request Username"
-msgstr ""
+msgstr "Demander un nom d'utilisateur"
 
 msgid "Username:"
-msgstr ""
-# authentication/templates/reset_password_question.html
+msgstr "Nom d'utilisateur :"
 
+# authentication/templates/reset_password_question.html
 msgid "Security Question:"
-msgstr ""
+msgstr "Question de sécurité :"
 
 msgid "Security Answer:"
-msgstr ""
+msgstr "Réponse à la question de sécurité :"
 
 msgid "New Password:"
-msgstr ""
+msgstr "Nouveau mot de passe :"
 
 msgid "Confirm Password:"
-msgstr ""
-
+msgstr "Confirmer le mot de passe :"
