@@ -62,6 +62,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
+    'django.middleware.locale.LocaleMiddleware'
 ]
 
 ROOT_URLCONF = 'spotify_wrapped.urls'
@@ -121,6 +122,18 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
+LANGUAGES = [
+    ('en', _('English')),
+    ('es', _('Spanish')),
+    ('fr', _('French')),
+]
+
+LOCALE_PATHS = [
+    BASE_DIR / 'locale',  # Directory to store translation files
+    BASE_DIR / '/locale',  # For translations stored inside your app
+]
+
+USE_I18N = True
 TIME_ZONE = 'UTC'
 
 USE_I18N = True
