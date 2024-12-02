@@ -325,7 +325,7 @@ def wrapped(request, time_range, theme):
         {"type": "profile", "title": "Welcome to Your Wrapped!", "content": profile_data},
         {"type": "song_transitions", "title": "Keep Clicking to Find Out Your Biggest Secrets :)", },
         {"type": "top_tracks", "title": "Top Tracks", "content": top_tracks_data},
-        {"type": "song_playback:", "title": "Listen Back To Your Favorites", "content": top_tracks_data, "token": access_token, },
+        {"type": "song_playback", "title": "Listen Back To Your Favorites", "content": top_tracks_data, "token": access_token, },
         {"type": "top_artists", "title": "Top Artists", "content": top_artists_data},
         {"type": "playlists", "title": "Playlists", "content": playlists_data,},
         {"type": "top_genres", "title": "Top Genres", "content": [{"genre": genre, "count": count} for genre, count in top_genres]},
