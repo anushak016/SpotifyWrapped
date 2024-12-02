@@ -24,5 +24,6 @@ urlpatterns = [
     path('auth/', include('authentication.urls')),
     path('spotify/', include('wrappedSlides.urls')),
     path('contact/', views.contact, name='contact'),
+    path('game/', include('game.urls')),
 ]
 

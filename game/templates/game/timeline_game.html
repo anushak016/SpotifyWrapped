@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+    <script src="https://cdn.jsdeliver.net/npm/sortablejs@latest/Sortable.min.js"></script>
     <style>
     body {
         font-family: "Helvetica Neue", Arial, sans-serif;
@@ -135,11 +135,12 @@
             })
             .then(response => response.json())
             .then(data => {
+                data.correct_order = undefined;
+                data.score = undefined;
                 if (data.error) {
                     alert(`error: ${data.error}`);
                 } else {
                     let responseMessage;
-
                     if (data.score >= 1 && data.score <= 3) {
                         responseMessage = `did you bump your head recently? you only got ${data.score} right.`;
                         alert(responseMessage);
