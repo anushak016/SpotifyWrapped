@@ -8,6 +8,17 @@ import requests
 from django.conf import settings
 from collections import Counter
 import datetime  # Add this import
+import requests
+import json
+import os
+import random
+from collections import Counter
+from django.conf import settings
+from functools import wraps
+from django.shortcuts import redirect, render
+from django.utils.translation import gettext as _
+from django.http import JsonResponse
+
 
 def spotify_login_required(view_func):
     @wraps(view_func)
@@ -312,3 +323,148 @@ def delete_wrap(request, wrap_id):
         except SavedWrap.DoesNotExist:
             return HttpResponse(status=404)
     return HttpResponse(status=405)
+
+
+def contact(request):
+    """
+        View for displaying the contact page.
+
+        This view renders the `contact.html` template, providing the user with a page
+        to contact the service or support team.
+
+        Args:
+            request (HttpRequest): The HTTP request object containing session data and request details.
+
+        Returns:
+            HttpResponse: A rendered response using the `contact.html` template.
+    """
+    context = {
+        'language_name': _('English')
+    }
+    return render(request, "contact.html")
+
+# Timeline Game View
+@spotify_login_required
+def timeline_game(request):
+    access_token = request.session.get("access_token")
+    if not access_token:
+        return redirect("spotify_login")
+
+    current_theme = request.session.get('theme', 'light')
+    tracks = fetch_top_tracks(access_token)
+    if not tracks:
+        return render(request, "error.html", {"message": "Unable to load your top tracks. Please try again later."})
+
+    randomized_tracks = random.sample(tracks, len(tracks))
+    request.session["correct_order"] = [track["id"] for track in tracks]
+
+    return render(request, "timeline_game.html", {
+        "tracks": randomized_tracks,
+        "current_theme": current_theme
+    })
+
+# Submit Timeline View
+@spotify_login_required
+def submit_timeline(request):
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)
+            submitted_order = data.get("track_order", [])
+            correct_order = request.session.get("correct_order", [])
+
+            # Calculate score
+            score = sum(1 for i, track_id in enumerate(submitted_order) if track_id == correct_order[i])
+            total = len(correct_order)
+
+            return JsonResponse({"score": score, "total": total, "correct_order": correct_order})
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=400)
+
+    return JsonResponse({"error": "This endpoint only accepts POST requests."}, status=405)
+
+def fetch_top_tracks(access_token):
+    headers = {"Authorization": f"Bearer {access_token}"}
+    url = "https://api.spotify.com/v1/me/top/tracks?limit=10"
+
+    response = requests.get(url, headers=headers)
+
+    # Debugging: Log the full API response
+    print(f"Response Status Code: {response.status_code}")
+    print(f"Response Content: {response.text}")
+
+    if response.status_code != 200:
+        print(f"Error fetching tracks: {response.status_code} - {response.text}")
+        return []
+
+    try:
+        data = response.json()
+        if "items" not in data or not data["items"]:
+            print("No tracks found in the API response.")
+            return []
+
+        tracks = [
+            {
+                "id": item["id"],
+                "title": item["name"],
+                "artist": item["artists"][0]["name"],
+                "popularity": item.get("popularity", 0),  # Include popularity for the challenge
+            }
+            for item in data["items"]
+        ]
+        print("Fetched Tracks:", tracks)  # Debugging: Print fetched tracks
+        return tracks
+    except Exception as e:
+        print(f"Error decoding JSON response: {e}")
+        return []
+
+# Popularity Challenge View
+@spotify_login_required
+def popularity_challenge(request):
+    access_token = request.session.get("access_token")
+    if not access_token:
+        return redirect("spotify_login")
+
+    tracks = fetch_top_tracks(access_token)
+    if not tracks:
+        return render(request, "error.html", {"message": "Unable to load tracks for the challenge."})
+
+    # Sort tracks by popularity
+    correct_order = sorted(tracks, key=lambda x: x["popularity"], reverse=True)
+    request.session["correct_order_popularity"] = [track["id"] for track in correct_order]
+    request.session["popularity_attempts"] = 0  # Track failed attempts
+
+    return render(request, "popularity_challenge.html", {"tracks": tracks})
+
+# Submit Popularity Challenge View
+def submit_popularity_challenge(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+        user_order = data.get("track_order", [])
+        correct_order = request.session.get("correct_order_popularity", [])
+
+        if not correct_order:
+            return JsonResponse({"error": "Correct order not available."})
+
+        # Track attempts
+        attempts = request.session.get("popularity_attempts", 0)
+
+        # Calculate score
+        score = sum(1 for i, track_id in enumerate(user_order) if track_id == correct_order[i])
+        is_correct = score == len(correct_order)
+
+        # Increment attempt count
+        if not is_correct:
+            attempts += 1
+            request.session["popularity_attempts"] = attempts
+
+        # Check for 5 failed attempts
+        if attempts >= 5 and not is_correct:
+            request.session["popularity_attempts"] = 0  # Reset attempts
+            return JsonResponse({
+                "message": "it's called a challenge for a reason...better luck next time",
+                "show_correct": True,
+                "correct_order": correct_order,
+            })
+
+        return JsonResponse({"score": score, "total": len(correct_order), "is_correct": is_correct})
+    return JsonResponse({"error": "Only POST requests are allowed."}, status=405)

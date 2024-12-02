@@ -26,6 +26,24 @@
         text-align: center;
     }
 
+    .custom-container {
+        flex: 1;
+        margin-top: 250px; /* Increased from 100px */
+        margin-bottom: 100px; /* Increased from 50px */
+        text-align: center;
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        padding: 40px;
+        width: 100%;
+        max-width: 600px;
+        transition: background-color 0.3s;
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
     /* Update existing heading styles */
     h1 {
         margin-bottom: 30px;
@@ -139,6 +157,74 @@
     .custom-buttons a {
         margin-bottom: 0; /* Remove existing margin since we're using gap */
     }
+
+    .contact-button-container {
+        margin-top: 30px;
+    }
+
+    .contact-button {
+        background-color: #1DB954;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 5px;
+        text-decoration: none;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        transition: background-color 0.3s ease;
+    }
+
+    .contact-button:hover {
+        background-color: #073625;
+    }
+
+    /* Dark mode styles */
+    .dark-mode .contact-button {
+        color: black;
+    }
+
+    /* Christmas mode styles */
+    .christmas-mode .contact-button {
+        background-color: #C41E3A;
+        color: white !important; /* Force white text */
+    }
+
+    .christmas-mode .contact-button:hover {
+        background-color: #8B0000;
+        color: white !important; /* Keep white text on hover */
+    }
+
+    /* Add these to your existing styles */
+    .game-button {
+        background-color: #1DB954;
+        color: white;
+        padding: 15px 20px;
+        border-radius: 5px;
+        text-decoration: none;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        transition: background-color 0.3s ease;
+        display: block;
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
+    .game-button:hover {
+        background-color: #073625;
+    }
+
+    /* Dark mode styles */
+    .dark-mode .game-button {
+        color: black;
+    }
+
+    /* Christmas mode styles */
+    .christmas-mode .game-button {
+        background-color: #C41E3A;
+        color: white !important; /* Force white text */
+    }
+
+    .christmas-mode .game-button:hover {
+        background-color: #8B0000;
+        color: white !important; /* Keep white text on hover */
+    }
 </style>
 {% endblock %}
 
@@ -160,6 +246,15 @@
             <a href="{% url 'christmas' %}" class="custom-button1">Christmas</a>
             <a href="{% url 'halloween' %}" class="custom-button2">Halloween</a>
         </div>
+    </div>
+    <div class="or-heading-container">
+        <h2>Or...play a game!</h2>
+    </div>
+    <div class="game-button-container">
+        <a href="{% url 'timeline_game' %}" class="game-button">Wrapped Game</a>
+    </div>
+    <div class="contact-button-container">
+        <a href="{% url 'contact' %}" class="contact-button">Contact the Developers</a>
     </div>
 {% endblock %}
 

@@ -14,4 +14,9 @@ urlpatterns = [
     path("wrap/<int:wrap_id>/", views.view_wrap, name="view_wrap"),
     path("wrap/<int:wrap_id>/delete/", views.delete_wrap, name="delete_wrap"),
     path("", views.home, name="homepage"),
+    path("contact/", views.contact, name="contact"),
+    path("timeline-game/", views.timeline_game, name="timeline_game"),
+    path("submit-timeline/", views.submit_timeline, name="submit_timeline"),
+    path("popularity-challenge/", views.popularity_challenge, name="popularity_challenge"),
+    path("submit-popularity-challenge/", views.submit_popularity_challenge, name="submit_popularity_challenge"),
 ]

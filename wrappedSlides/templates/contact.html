@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Contact the Developers{% endblock %}
+
+{% block extra_styles %}
+<style>
+    /* Add custom container margin */
+    .custom-container {
+        margin-top: 100px;    /* Space below header */
+        margin-bottom: 50px;  /* Space above footer */
+        margin-left: auto;    /* Center horizontally */
+        margin-right: auto;   /* Center horizontally */
+    }
+
+    .text-box {
+        width: 80%;
+        max-width: 600px;
+        padding: 20px;
+        margin: 20px auto;    /* Center the text boxes and add vertical spacing */
+        border-radius: 8px;
+        background-color: #1DB954; /* Spotify green */
+        border: none;
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        text-align: center; /* Center the text inside */
+    }
+
+    .text-box strong,
+    .text-box br,
+    .text-box {
+        color: white !important; /* Make all text white */
+    }
+
+    /* Dark mode styles */
+    .dark-mode .text-box {
+        background-color: #2a2a2a;
+        border-color: #444;
+    }
+
+    /* Christmas mode styles */
+    .christmas-mode .text-box {
+        background-color: #034f1d; /* Christmas green */
+        color: white !important;
+    }
+
+    .christmas-mode .text-box strong {
+        color: white !important;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+    <h1>Contact the Developers</h1>
+    <div class="text-box"><strong>Paloma Cardozo</strong><br>Full-Stack Developer<br>Email: pmc8@gatech.edu</div>
+    <div class="text-box"><strong>Anusha Kumar</strong><br>Full-Stack Developer<br>Email: akumar895@gatech.edu</div>
+    <div class="text-box"><strong>Yash Panchal</strong><br>Full-Stack Developer<br>Email: ypanchal6@gatech.edu</div>
+    <div class="text-box"><strong>Aditi Umapathy</strong><br>Full-Stack Developer<br>Email: aumapathy7@gatech.edu</div>
+    <div class="text-box"><strong>Richard Xu</strong><br>Full-Stack Developer<br>Email: rxu358@gatech.edu</div>
+{% endblock %}
